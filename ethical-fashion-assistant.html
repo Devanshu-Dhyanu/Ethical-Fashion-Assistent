@@ -1539,6 +1539,7 @@
         onclick="sendChip('What certifications should I look for to ensure clothing is ethically made?')">Certifications</button>
       <button class="nav-link"
         onclick="sendChip('Give me a beginner guide on how to build a sustainable and mindful wardrobe.')">Guides</button>
+      <button id="nav-signup" class="nav-link" style="color:var(--accent); font-weight:700;" onclick="checkAuth()">Sign Up</button>
       <button class="nav-cta" onclick="showChat()"><span class="nav-dot"></span>Ask AI</button>
 
       <div class="tooltip-container">
@@ -1825,10 +1826,12 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
 
     // Real Firebase Auth Listener
     onAuthStateChanged(auth, (user) => {
+      const signupBtn = document.getElementById('nav-signup');
       if (user) {
         isLoggedIn = true;
         userProfile.style.display = 'flex';
         authModal.classList.remove('open');
+        if (signupBtn) signupBtn.style.display = 'none';
         // Update profile
         const avatar = userProfile.querySelector('.user-avatar');
         if (user.photoURL) {
@@ -1845,6 +1848,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       } else {
         isLoggedIn = false;
         userProfile.style.display = 'none';
+        if (signupBtn) signupBtn.style.display = 'block';
         // Clear UI data on logout
         sessions = [];
         messages = [];
