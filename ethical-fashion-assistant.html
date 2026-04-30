@@ -65,26 +65,23 @@
 
     /* ── NAVBAR ── */
     header {
-      position: relative;
-      z-index: 10;
+      position: fixed;
+      top: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 3rem);
+      max-width: 1200px;
+      height: 64px;
+      z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 2.5rem;
-      height: 68px;
-      background: #000000;
-      border-bottom: 1px solid rgba(181, 201, 154, 0.12);
-    }
-
-    header::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent3) 30%, var(--accent) 60%, transparent);
-      opacity: 0.5;
+      padding: 0 1.5rem;
+      background: rgba(10, 10, 10, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     }
 
     .logo {
@@ -506,7 +503,7 @@
       max-width: 860px;
       width: 100%;
       margin: 0 auto;
-      padding: 0 1.5rem;
+      padding: 90px 1.5rem 0; /* Added top padding for floating header */
       overflow: hidden;
       min-height: 0;
     }
