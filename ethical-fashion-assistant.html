@@ -1614,30 +1614,30 @@
     <!-- Chat Area -->
     <div id="chat-area">
       <div id="messages"></div>
-    </div>
 
-    <div class="input-bar">
-      <div class="input-row">
-        <textarea id="user-input" rows="1"
-          placeholder="Ask about sustainable brands, fabrics, ethical shopping…"></textarea>
-        <button id="mic-btn" onclick="startSpeech()" title="Voice Input">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-            <line x1="12" y1="19" x2="12" y2="22"></line>
-          </svg>
-        </button>
-        <button id="send-btn" onclick="sendMessage()" title="Send">
-          <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
-            <path d="M2 15L15 8.5L2 2V7L11 8.5L2 10V15Z" fill="white" />
-          </svg>
-        </button>
-      </div>
-      <div class="input-footer">
-        <span class="footer-tag"><span class="footer-dot"></span>Ethical fashion only</span>
-        <span class="footer-tag"><span class="footer-dot"></span>Powered by Gemini</span>
-        <span class="footer-tag"><span class="footer-dot"></span>Eco-conscious advice</span>
+      <div class="input-bar">
+        <div class="input-row">
+          <textarea id="user-input" rows="1"
+            placeholder="Ask about sustainable brands, fabrics, ethical shopping…"></textarea>
+          <button id="mic-btn" onclick="startSpeech()" title="Voice Input">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="22"></line>
+            </svg>
+          </button>
+          <button id="send-btn" onclick="sendMessage()" title="Send">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+              <path d="M2 15L15 8.5L2 2V7L11 8.5L2 10V15Z" fill="white" />
+            </svg>
+          </button>
+        </div>
+        <div class="input-footer">
+          <span class="footer-tag"><span class="footer-dot"></span>Ethical fashion only</span>
+          <span class="footer-tag"><span class="footer-dot"></span>Powered by Gemini</span>
+          <span class="footer-tag"><span class="footer-dot"></span>Eco-conscious advice</span>
+        </div>
       </div>
     </div>
 
@@ -1794,7 +1794,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       messages = [];
       messagesEl.innerHTML = '';
       updateSidebarHistory();
-      showHome();
+      showChat(); // Now correctly goes to an empty chat instead of Home
       if(window.innerWidth < 768) toggleSidebar();
     }
 
@@ -1845,6 +1845,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       welcomeEl.style.display = 'none';
       chatAreaEl.style.display = 'flex';
       chatAreaEl.style.flexDirection = 'column';
+      setTimeout(() => inputEl.focus(), 50);
     }
 
     function showHome() {
