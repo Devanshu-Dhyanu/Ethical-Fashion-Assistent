@@ -986,6 +986,20 @@
     #mic-btn:active {
       transform: scale(0.93);
     }
+    
+    /* Recording Pulse Animation */
+    .recording {
+      background: #fff0f0 !important;
+      color: #ff605c !important;
+      border-color: #ff605c !important;
+      animation: pulseMic 1.5s infinite;
+    }
+
+    @keyframes pulseMic {
+      0% { box-shadow: 0 0 0 0 rgba(255, 96, 92, 0.4); transform: scale(1); }
+      70% { box-shadow: 0 0 0 15px rgba(255, 96, 92, 0); transform: scale(1.1); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 96, 92, 0); transform: scale(1); }
+    }
 
     #send-btn:disabled,
     #mic-btn:disabled {
@@ -2092,16 +2106,16 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       if (!SpeechRecognition) return alert("Your browser does not support Voice Input.");
 
       const recognition = new SpeechRecognition();
-      micBtn.style.color = "#ff605c"; // visual indicator
+      micBtn.classList.add('recording');
 
       recognition.onresult = (e) => {
         inputEl.value = e.results[0][0].transcript;
         inputEl.focus();
-        micBtn.style.color = "var(--accent)";
+        micBtn.classList.remove('recording');
       };
 
-      recognition.onerror = () => micBtn.style.color = "var(--accent)";
-      recognition.onend = () => micBtn.style.color = "var(--accent)";
+      recognition.onerror = () => micBtn.classList.remove('recording');
+      recognition.onend = () => micBtn.classList.remove('recording');
       recognition.start();
     }
     window.startSpeech = startSpeech;
