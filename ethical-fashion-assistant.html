@@ -1839,11 +1839,40 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
           avatar.textContent = user.displayName[0];
         }
         userProfile.querySelector('span').textContent = user.displayName.split(' ')[0];
+        
+        // RELOAD USER-SPECIFIC HISTORY
+        loadUserHistory();
       } else {
         isLoggedIn = false;
         userProfile.style.display = 'none';
+        // Clear UI data on logout
+        sessions = [];
+        messages = [];
+        currentSessionId = null;
+        updateSidebarHistory();
+        showHome();
       }
     });
+
+    function getStorageKey(type, id = '') {
+      const user = auth.currentUser;
+      if (!user) return null;
+      if (type === 'sessions') return `biostyle_sessions_${user.uid}`;
+      if (type === 'messages') return `biostyle_msg_${user.uid}_${id}`;
+      return null;
+    }
+
+    function loadUserHistory() {
+      const key = getStorageKey('sessions');
+      if (!key) return;
+      sessions = JSON.parse(localStorage.getItem(key)) || [];
+      updateSidebarHistory();
+      if (sessions.length > 0) {
+        loadSession(sessions[0].id);
+      } else {
+        showHome();
+      }
+    }
 
     function checkAuth() {
       if (!isLoggedIn) {
@@ -1905,11 +1934,12 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
 
     function clearAllChats() {
       if (confirm("Are you sure you want to completely clear ALL conversation history?")) {
-        sessions.forEach(s => localStorage.removeItem('verdure_msg_' + s.id));
+        const sKey = getStorageKey('sessions');
+        sessions.forEach(s => localStorage.removeItem(getStorageKey('messages', s.id)));
         sessions = [];
         messages = [];
         currentSessionId = null;
-        localStorage.removeItem('verdure_sessions');
+        localStorage.removeItem(sKey);
         messagesEl.innerHTML = '';
         updateSidebarHistory();
         showHome();
@@ -1929,8 +1959,10 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     window.startNewSession = startNewSession;
 
     function loadSession(id) {
+      if (!id) return;
       currentSessionId = id;
-      messages = JSON.parse(localStorage.getItem('verdure_msg_' + id)) || [];
+      const key = getStorageKey('messages', id);
+      messages = JSON.parse(localStorage.getItem(key)) || [];
       messagesEl.innerHTML = '';
       messages.forEach(msg => addMessage(msg.role === 'user' ? 'user' : 'ai', msg.content));
       updateSidebarHistory();
@@ -2053,14 +2085,16 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       messages.push({ role: 'user', content: text });
       addMessage('user', text);
 
+      localStorage.setItem(getStorageKey('messages', currentSessionId), JSON.stringify(messages));
+
       if (!currentSessionId) {
         currentSessionId = generateId();
         const shortTitle = text.split(' ').slice(0, 4).join(' ') + (text.split(' ').length > 4 ? '...' : '');
         sessions.unshift({ id: currentSessionId, title: shortTitle });
-        localStorage.setItem('verdure_sessions', JSON.stringify(sessions));
+        localStorage.setItem(getStorageKey('sessions'), JSON.stringify(sessions));
         updateSidebarHistory();
       }
-      localStorage.setItem('verdure_msg_' + currentSessionId, JSON.stringify(messages));
+      localStorage.setItem(getStorageKey('messages', currentSessionId), JSON.stringify(messages));
 
       const typingEl = addTyping();
 
@@ -2105,7 +2139,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
         typingEl.remove();
         addMessage('ai', reply);
         messages.push({ role: 'assistant', content: reply });
-        localStorage.setItem('verdure_msg_' + currentSessionId, JSON.stringify(messages));
+        localStorage.setItem(getStorageKey('messages', currentSessionId), JSON.stringify(messages));
 
       } catch (err) {
         console.error("API Error: ", err);
