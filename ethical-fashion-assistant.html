@@ -39,7 +39,7 @@
       font-family: 'Dosis', sans-serif;
       background: var(--bg-deep);
       color: var(--text-main);
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -492,6 +492,7 @@
       margin: 0 auto;
       padding: 0 1.5rem;
       overflow: hidden;
+      min-height: 0;
     }
 
     /* ── HERO / WELCOME ── */
@@ -711,6 +712,7 @@
       flex-direction: column;
       overflow: hidden;
       gap: 0;
+      min-height: 0;
     }
 
     #messages {
@@ -723,6 +725,7 @@
       scrollbar-width: thin;
       scrollbar-color: var(--border) transparent;
       scroll-behavior: smooth;
+      min-height: 0;
     }
 
     #messages::-webkit-scrollbar {
