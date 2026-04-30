@@ -1596,6 +1596,57 @@
     /* ── MESSAGE ANIMATION ── */
     .message { animation: slideUp 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards; opacity: 0; }
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* ── MOBILE RESPONSIVENESS (PHONES) ── */
+    @media screen and (max-width: 768px) {
+      header { padding: 0.8rem 1.2rem; }
+      .nav-links { display: none; } /* Hide main nav links on mobile, use sidebar */
+      
+      .hero-content { padding-top: 4rem; text-align: center; }
+      .hero-title { font-size: 2.8rem; }
+      .hero-subtitle { font-size: 1rem; padding: 0 1rem; }
+      
+      .topic-cards {
+        grid-template-columns: 1fr; /* Stack cards vertically */
+        gap: 1.5rem;
+        padding: 0 1.5rem;
+      }
+      
+      .topic-card { height: 180px !important; } /* Fixed height for mobile */
+      .topic-card:hover { transform: translateY(-5px); }
+      
+      #sidebar { width: 100%; left: -100%; border-right: none; }
+      #sidebar.open { left: 0; }
+      
+      .input-container { padding: 0.8rem 1rem 1.5rem; }
+      .input-bar { padding: 0.6rem 0.8rem; }
+      #user-input { font-size: 1rem; }
+      
+      footer.site-footer {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+      }
+      
+      .footer-socials { gap: 1rem; }
+      
+      /* Disable complex tooltips on mobile for better UX */
+      .ig-tooltip, .fb-tooltip, .tooltip1, .tooltip2, .tooltip3, .tooltip4, .tooltip5, .tooltip6, .tooltip7, .tooltip8 {
+        display: none !important;
+      }
+
+      .deco-leaf { display: none; } /* Hide decorative leaves on small screens to reduce clutter */
+
+      .chat-screen .chat-header { padding: 0.8rem 1.2rem; }
+    }
+
+    /* Small Phone adjustments */
+    @media screen and (max-width: 480px) {
+      .hero-title { font-size: 2.2rem; }
+      .premium-card { padding: 1.5rem; }
+      .premium-h { font-size: 1.2rem; }
+    }
   </style>
 </head>
 
