@@ -480,6 +480,22 @@
     .sidebar-link:hover { color: var(--accent); }
     .sidebar-title { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
 
+    .new-chat-btn {
+      background: var(--accent); color: #0b1812; border: none; padding: 10px 15px; width: 100%;
+      font-size: 1rem; font-weight: 700; border-radius: 6px; cursor: pointer;
+      font-family: 'Dosis', sans-serif; transition: transform 0.2s, background 0.2s;
+    }
+    .new-chat-btn:hover { background: #c8ddb0; transform: translateY(-1px); }
+    #history-list {
+      display: flex; flex-direction: column; gap: 0.5rem; max-height: 40vh; overflow-y: auto; scrollbar-width: none;
+    }
+    .history-item {
+      color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 8px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+    }
+    .history-item:hover, .history-item.active { background: rgba(255,255,255,0.06); color: var(--text-main); }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 0.5rem 0; width: 100%; }
+
     /* Main layout */
     main {
       position: relative;
@@ -1427,11 +1443,17 @@
       <div class="logo-text">Ver<span>dure</span></div>
     </div>
     <div class="sidebar-links">
-      <div class="sidebar-title">Menu</div>
+      <button class="new-chat-btn" onclick="startNewSession()">+ New Chat</button>
+      <div class="sidebar-title" style="margin-top:1rem;">Your Conversations</div>
+      <div id="history-list">
+        <!-- Dynamic chat history list goes here -->
+      </div>
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-title" style="margin-top:1rem;">Menu</div>
       <a href="#" class="sidebar-link" onclick="toggleSidebar(); showHome();">Home Dashboard</a>
-      <a href="#" class="sidebar-link" onclick="toggleSidebar(); alert('Settings coming soon in v2!');">Preferences</a>
       <a href="#" class="sidebar-link" onclick="toggleSidebar(); sendChip('What is Verdure\'s mission?');">Our Mission</a>
-      <a href="#" class="sidebar-link" onclick="toggleSidebar(); alert('Safe logout successful.');">Log Out</a>
+      <a href="#" class="sidebar-link" onclick="clearAllChats();">Clear All Data</a>
     </div>
   </aside>
 
@@ -1613,7 +1635,6 @@
         </div>
         <div class="input-footer">
           <span class="footer-tag"><span class="footer-dot"></span>Ethical fashion only</span>
-          <button class="clear-btn" onclick="clearChat()">Clear History</button>
           <span class="footer-tag"><span class="footer-dot"></span>Powered by Gemini</span>
           <span class="footer-tag"><span class="footer-dot"></span>Eco-conscious advice</span>
         </div>
@@ -1718,7 +1739,9 @@ Refusal template for off-topic: "I'm Verdure, and my expertise is entirely in et
 
 Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold headers for key terms when listing multiple items. Be specific with brand names, certifications, and material science when relevant. Advocate for mindful consumption without judgment.`;
 
-    let messages = JSON.parse(localStorage.getItem('verdure_chat')) || [];
+    let sessions = JSON.parse(localStorage.getItem('verdure_sessions')) || [];
+    let currentSessionId = null;
+    let messages = [];
     let isLoading = false;
 
     const welcomeEl = document.getElementById('welcome');
@@ -1729,18 +1752,60 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     const micBtn = document.getElementById('mic-btn');
 
     // Load local storage messages on init
-    if (messages.length > 0) {
-      showChat();
-      messages.forEach(msg => addMessage(msg.role === 'user' ? 'user' : 'ai', msg.content));
+    updateSidebarHistory();
+    if (sessions.length > 0) {
+      loadSession(sessions[0].id);
     }
 
-    function clearChat() {
-      if (confirm("Are you sure you want to clear your chat history?")) {
-        messages = [];
-        localStorage.removeItem('verdure_chat');
-        messagesEl.innerHTML = '';
-        showHome();
+    function updateSidebarHistory() {
+      const listEl = document.getElementById('history-list');
+      if(listEl) {
+        listEl.innerHTML = '';
+        sessions.forEach(s => {
+          const div = document.createElement('div');
+          div.className = `history-item ${s.id === currentSessionId ? 'active' : ''}`;
+          div.textContent = s.title;
+          div.onclick = () => loadSession(s.id);
+          listEl.appendChild(div);
+        });
       }
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
+
+    function clearAllChats() {
+      if (confirm("Are you sure you want to completely clear ALL conversation history?")) {
+        sessions.forEach(s => localStorage.removeItem('verdure_msg_' + s.id));
+        sessions = [];
+        messages = [];
+        currentSessionId = null;
+        localStorage.removeItem('verdure_sessions');
+        messagesEl.innerHTML = '';
+        updateSidebarHistory();
+        showHome();
+        if (window.innerWidth < 768) toggleSidebar();
+      }
+    }
+
+    function startNewSession() {
+      currentSessionId = null;
+      messages = [];
+      messagesEl.innerHTML = '';
+      updateSidebarHistory();
+      showHome();
+      if(window.innerWidth < 768) toggleSidebar();
+    }
+
+    function loadSession(id) {
+      currentSessionId = id;
+      messages = JSON.parse(localStorage.getItem('verdure_msg_' + id)) || [];
+      messagesEl.innerHTML = '';
+      messages.forEach(msg => addMessage(msg.role === 'user' ? 'user' : 'ai', msg.content));
+      updateSidebarHistory();
+      showChat();
+      if(window.innerWidth < 768) toggleSidebar();
     }
 
     function startSpeech() {
@@ -1857,7 +1922,15 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
 
       messages.push({ role: 'user', content: text });
       addMessage('user', text);
-      localStorage.setItem('verdure_chat', JSON.stringify(messages));
+
+      if (!currentSessionId) {
+        currentSessionId = generateId();
+        const shortTitle = text.split(' ').slice(0, 4).join(' ') + (text.split(' ').length > 4 ? '...' : '');
+        sessions.unshift({ id: currentSessionId, title: shortTitle });
+        localStorage.setItem('verdure_sessions', JSON.stringify(sessions));
+        updateSidebarHistory();
+      }
+      localStorage.setItem('verdure_msg_' + currentSessionId, JSON.stringify(messages));
 
       const typingEl = addTyping();
 
@@ -1902,7 +1975,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
         typingEl.remove();
         addMessage('ai', reply);
         messages.push({ role: 'assistant', content: reply });
-        localStorage.setItem('verdure_chat', JSON.stringify(messages));
+        localStorage.setItem('verdure_msg_' + currentSessionId, JSON.stringify(messages));
 
       } catch (err) {
         console.error("API Error: ", err);
