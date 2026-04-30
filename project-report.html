@@ -43,8 +43,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 0;
-    background: linear-gradient(160deg, #0a1628 0%, #0d2137 30%, #0a1628 60%, #111d2e 100%);
-    color: #fff;
+    background: linear-gradient(160deg, #f8faf8 0%, #ffffff 50%, #f0f4f0 100%);
+    color: #1a3a2a;
     overflow: hidden;
   }
 
@@ -54,7 +54,7 @@
     top: -100px; right: -100px;
     width: 500px; height: 500px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(181,201,154,0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(127,176,138,0.2) 0%, transparent 70%);
     pointer-events: none;
   }
 
@@ -140,7 +140,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 32pt;
     font-weight: 900;
-    color: #fff;
+    color: #1a3a2a;
     margin-bottom: 3mm;
     line-height: 1.15;
   }
@@ -198,7 +198,7 @@
   .cover-info-box .info-value {
     font-size: 11pt;
     font-weight: 700;
-    color: #f0e6d3;
+    color: #1a3a2a;
     display: block;
   }
 
@@ -523,10 +523,9 @@
     <span class="page-header-right">INT 428 Project Report</span>
   </div>
 
-  <h2>1. Introduction</h2>
   <p>The fashion industry is one of the most polluting industries in the world, contributing approximately 10% of global carbon emissions and producing 92 million tonnes of textile waste annually. As awareness grows around environmental sustainability, consumers are increasingly seeking guidance on making ethical fashion choices.</p>
-  <p><strong>BioStyle</strong> is an AI-powered web application designed to serve as a personal ethical fashion advisor. Built using modern web technologies (HTML5, CSS3, JavaScript) and integrated with the Anthropic Claude API, BioStyle provides real-time, conversational guidance on sustainable fabrics, ethical brands, certifications, capsule wardrobes, greenwashing awareness, and garment care — all within a beautifully designed, responsive interface.</p>
-  <p>The name "BioStyle" represents lush green growth, symbolizing the app's mission to promote a greener approach to fashion consumption.</p>
+  <p><strong>BioStyle</strong> is a high-performance, multimodal AI web application developed to serve as a personal ethical fashion advisor. Built with a premium "Nature White" design system and integrated with the <strong>Google Gemini 1.5 Flash AI</strong>, BioStyle provides real-time, conversational guidance and visual analysis on sustainable fabrics, ethical brands, and circular fashion economy.</p>
+  <p>Key highlights include Google Firebase authentication, cloud-synchronized chat history, and advanced Vision AI capabilities to analyze garment tags and fabric textures in real-time.</p>
 
   <br>
   <h2>2. Problem Statement</h2>
@@ -542,12 +541,12 @@
   <br>
   <h2>3. Objectives</h2>
   <ol>
-    <li>To design and develop a responsive, single-page web application for ethical fashion guidance.</li>
-    <li>To integrate a Large Language Model (Claude AI) to provide intelligent, conversational responses on sustainable fashion topics.</li>
-    <li>To implement strict domain-lock ensuring the AI only responds to fashion-related queries.</li>
-    <li>To create an aesthetically premium, dark-themed UI with glassmorphism, animations, and micro-interactions.</li>
-    <li>To provide quick-access topic cards for common ethical fashion questions.</li>
-    <li>To integrate social media sharing capabilities for community building.</li>
+    <li>To develop a responsive, premium SPA for ethical fashion awareness and education.</li>
+    <li>To integrate <strong>Google Gemini 1.5 Flash</strong> for intelligent text and visual (multimodal) analysis.</li>
+    <li>To implement <strong>Firebase Authentication</strong> for secure user login and data persistence.</li>
+    <li>To design a "Nature White" premium UI utilizing glassmorphism and organic animations.</li>
+    <li>To provide a <strong>Monetized Freemium Model</strong> with usage limits and premium upselling.</li>
+    <li>To enable user-specific <strong>Chat History Management</strong> with full CRUD capabilities.</li>
   </ol>
 
   <div class="page-footer-line"></div>
@@ -575,9 +574,8 @@
   </div>
 
   <br>
-  <h2>5. System Architecture & Design</h2>
   <h3>5.1 High-Level Architecture</h3>
-  <p>BioStyle follows a client-side single-page application (SPA) architecture. The entire application runs in the browser with no backend server — it directly communicates with the Anthropic Claude API for AI responses.</p>
+  <p>BioStyle follows a modern Cloud-Hybrid architecture. While the front-end remains a lightweight SPA, it leverages <strong>Google Firebase</strong> for Identity Management and uses <strong>Gemini 1.5 Multimodal API</strong> for core intelligence.</p>
 
   <div class="arch-diagram">
     <strong style="font-size:10pt; color:#1a3a2a;">System Architecture Diagram</strong>
@@ -623,32 +621,31 @@
 
   <table>
     <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
-    <tr><td>Structure</td><td>HTML5</td><td>Semantic markup, accessibility</td></tr>
-    <tr><td>Styling</td><td>CSS3 (Custom Properties + Animations)</td><td>Dark theme, glassmorphism, micro-interactions</td></tr>
-    <tr><td>Logic</td><td>Vanilla JavaScript (ES6+)</td><td>DOM manipulation, API calls, state management</td></tr>
-    <tr><td>AI Engine</td><td>Anthropic Claude API (claude-sonnet-4-20250514)</td><td>Natural language processing for fashion queries</td></tr>
-    <tr><td>Typography</td><td>Google Fonts (Dosis)</td><td>Modern, clean typeface throughout the UI</td></tr>
-    <tr><td>Icons</td><td>Inline SVG</td><td>Social media icons, leaf decorations, UI elements</td></tr>
-    <tr><td>Deployment</td><td>Static HTML File</td><td>Zero-config deployment, works on any web server</td></tr>
+    <tr><td>Structure</td><td>HTML5 & Semantic Elements</td><td>Structure and accessibility</td></tr>
+    <tr><td>Styling</td><td>CSS3 (Custom Vars + Animation)</td><td>"Nature White" theme, Glassmorphism</td></tr>
+    <tr><td>Frontend Logic</td><td>Vanilla JavaScript (ES6)</td><td>State management & API coordination</td></tr>
+    <tr><td>Intelligence</td><td>Google Gemini 1.5 Flash-Lite</td><td>Multimodal NLP and Vision processing</td></tr>
+    <tr><td>Authentication</td><td>Firebase Auth v10</td><td>Google OAuth & Identity management</td></tr>
+    <tr><td>Persistence</td><td>Browser LocalStorage</td><td>Cached session & history management</td></tr>
+    <tr><td>Icons/Illustrations</td><td>Inline SVG & CSS Drawings</td><td>Organic leaf decorations & UI icons</td></tr>
   </table>
 
   <div class="highlight-box">
-    <strong>Design Philosophy:</strong> By avoiding frameworks like React or Vue, the application achieves instant load times, zero dependency vulnerabilities, and maximum portability.
+    <strong>Design Philosophy:</strong> By avoiding heavy frameworks, BioStyle achieves sub-1s load times while delivering a premium, state-of-the-art interactive experience.
   </div>
 
   <br>
   <h2>7. Implementation Details</h2>
 
-  <h3>7.1 CSS Design System (Custom Properties)</h3>
-  <p>The application uses CSS custom properties (variables) to maintain a consistent design language:</p>
-  <div class="code-block"><span class="comment">/* Core Design Tokens */</span>
+  <h3>7.1 CSS Design System (Nature White)</h3>
+  <p>The application uses a customized palette optimized for clarity and a premium organic feel:</p>
+  <div class="code-block"><span class="comment">/* Core "Nature White" Design Tokens */</span>
 <span class="keyword">:root</span> {
-  <span class="func">--bg-deep</span>:    <span class="string">#000000</span>;
-  <span class="func">--accent</span>:     <span class="string">#b5c99a</span>;    <span class="comment">/* Primary green */</span>
-  <span class="func">--accent3</span>:    <span class="string">#7fb08a</span>;    <span class="comment">/* Secondary green */</span>
-  <span class="func">--text-main</span>:  <span class="string">#e8ede6</span>;
-  <span class="func">--text-muted</span>: <span class="string">#7a9180</span>;
-  <span class="func">--border</span>:     <span class="string">#2a3d31</span>;
+  <span class="func">--bg-deep</span>:    <span class="string">#ffffff</span>;
+  <span class="func">--accent</span>:     <span class="string">#4a7c5a</span>;    <span class="comment">/* Forest green */</span>
+  <span class="func">--accent3</span>:    <span class="string">#7fb08a</span>;    <span class="comment">/* Sage highlights */</span>
+  <span class="func">--text-main</span>:  <span class="string">#1a1a2e</span>;
+  <span class="func">--border</span>:     <span class="string">#e8ede6</span>;
 }</div>
 
   <h3>7.2 AI Integration — Claude API</h3>
@@ -731,14 +728,13 @@
   <h3>8.1 Core Features</h3>
   <table>
     <tr><th>Feature</th><th>Description</th></tr>
-    <tr><td>AI Chat Interface</td><td>Real-time conversational AI for sustainable fashion queries with multi-turn context</td></tr>
-    <tr><td>Domain-Locked AI</td><td>System prompt ensures responses are strictly limited to ethical fashion topics</td></tr>
-    <tr><td>Quick Topic Cards</td><td>Six interactive, animated cards for common sustainability questions</td></tr>
-    <tr><td>Markdown Rendering</td><td>AI responses support bold, italic, and list formatting</td></tr>
-    <tr><td>Typing Indicator</td><td>Animated dots show while AI is generating a response</td></tr>
-    <tr><td>Social Sharing</td><td>Integrated tooltip system with Twitter, Facebook, WhatsApp, Discord, Pinterest, Dribbble, GitHub, Reddit</td></tr>
-    <tr><td>Instagram & Facebook Footer</td><td>Rich hover tooltips showing profile previews for BioStyle's social accounts</td></tr>
-    <tr><td>Responsive Design</td><td>Fully responsive layout that adapts to different screen sizes</td></tr>
+    <tr><td>Vision AI</td><td>Multimodal analysis allowing users to upload photos of garment tags for ethical checking.</td></tr>
+    <tr><td>Conversational Chat</td><td>Intelligent context-aware discussions about sustainable style.</td></tr>
+    <tr><td>Paywall Logic</td><td>Usage-based limit (3 uploads) with a premium "Go Pro" upsell modal.</td></tr>
+    <tr><td>Google Sync</td><td>Firebase integration to save chat history across devices.</td></tr>
+    <tr><td>Session Management</td><td>Users can create, rename (auto), and delete specific chat sessions.</td></tr>
+    <tr><td>Voice Input</td><td>Hands-free interaction with pulsing visual recording feedback.</td></tr>
+    <tr><td>Domain Safety</td><td>Strict AI system instruction to prevent non-fashion related responses.</td></tr>
   </table>
 
   <h3>8.2 UI/UX Highlights</h3>
@@ -753,15 +749,15 @@
   <br>
   <h2>9. UI/UX Design</h2>
 
-  <h3>9.1 Color Palette</h3>
+  <h3>9.1 Color Palette (Nature White)</h3>
   <table>
     <tr><th>Color</th><th>Hex Code</th><th>Usage</th></tr>
-    <tr><td style="color:#b5c99a;">■ Primary Accent</td><td>#b5c99a</td><td>Highlights, CTA button, accent text</td></tr>
-    <tr><td style="color:#7fb08a;">■ Secondary Accent</td><td>#7fb08a</td><td>Links, icons, send button, dividers</td></tr>
-    <tr><td style="color:#d4a574;">■ Warm Accent</td><td>#d4a574</td><td>Complementary warm highlights</td></tr>
-    <tr><td style="background:#000;color:#fff;">■ Background</td><td>#000000</td><td>Page background, navbar, footer</td></tr>
-    <tr><td style="color:#e8ede6;">■ Text Primary</td><td>#e8ede6</td><td>Main body text, headings</td></tr>
-    <tr><td style="color:#7a9180;">■ Text Muted</td><td>#7a9180</td><td>Secondary text, descriptions</td></tr>
+    <tr><td style="color:#4a7c5a;">■ Dark Forest</td><td>#4a7c5a</td><td>Primary brand color, text headings, icons</td></tr>
+    <tr><td style="color:#7fb08a;">■ Sage Green</td><td>#7fb08a</td><td>Accents, badges, pulsing animations</td></tr>
+    <tr><td style="color:#ffffff; background:#e0e0e0;">■ Pure White</td><td>#ffffff</td><td>Main page and card backgrounds</td></tr>
+    <tr><td style="color:#f8faf8; background:#e0e0e0;">■ Soft Mint</td><td>#f8faf8</td><td>Input fields and subtle UI layers</td></tr>
+    <tr><td style="color:#1a3a2a;">■ Deep Text</td><td>#1a3a2a</td><td>Main readable copy for high contrast</td></tr>
+    <tr><td style="color:#ecd06f;">■ Gold Accent</td><td>#ecd06f</td><td>Premium/Pro badges and paywall highlights</td></tr>
   </table>
 
   <h3>9.2 Typography</h3>
