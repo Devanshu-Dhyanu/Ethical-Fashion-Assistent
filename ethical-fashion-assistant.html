@@ -1757,6 +1757,18 @@
   </footer>
 
   <script src="config.js"></script>
+  <script>
+    // Hide splash screen even if Firebase/Modules take time
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if(splash) {
+          splash.style.opacity = '0';
+          setTimeout(() => splash.style.display = 'none', 500);
+        }
+      }, 1500);
+    });
+  </script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -1963,19 +1975,6 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       document.getElementById('sidebar-overlay').classList.toggle('open');
     }
     window.toggleSidebar = toggleSidebar;
-
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
-      document.getElementById('sidebar-overlay').classList.toggle('open');
-    }
-
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        splash.style.opacity = '0';
-        splash.style.visibility = 'hidden';
-      }, 1500);
-    });
 
     function addMessage(role, text) {
       const el = document.createElement('div');
