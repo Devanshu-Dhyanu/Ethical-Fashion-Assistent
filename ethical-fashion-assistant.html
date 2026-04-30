@@ -1204,8 +1204,14 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     const typingEl = addTyping();
 
     try {
-      // ⚠️ IMPORTANT: Get your FREE API key from https://aistudio.google.com/
-      const API_KEY = 'AIzaSyA7_iqxweqwjbtUwGIdlcfPqfku1AkcTw0';
+      // ⚠️ Use local storage to prevent committing API keys to GitHub!
+      let API_KEY = localStorage.getItem('gemini_api_key');
+      if (!API_KEY) {
+         API_KEY = prompt("🔒 Please enter your free Gemini API Key (it will be saved securely in your browser):");
+         if (!API_KEY) throw new Error("API Key is required to chat.");
+         localStorage.setItem('gemini_api_key', API_KEY.trim());
+      }
+      
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${API_KEY}`;
 
       // Convert our chat history format to Gemini's expected format
