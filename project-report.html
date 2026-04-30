@@ -509,8 +509,9 @@
   <div class="toc-item"><span>9. &nbsp;UI/UX Design</span><span>7</span></div>
   <div class="toc-item"><span>10. Testing &amp; Results</span><span>8</span></div>
   <div class="toc-item"><span>11. Future Enhancements</span><span>8</span></div>
-  <div class="toc-item"><span>12. Conclusion</span><span>9</span></div>
-  <div class="toc-item"><span>13. References</span><span>9</span></div>
+  <div class="toc-item"><span>12. Challenges Faced</span><span>9</span></div>
+  <div class="toc-item"><span>13. Conclusion</span><span>9</span></div>
+  <div class="toc-item"><span>14. References</span><span>9</span></div>
 
   <div class="page-footer-line"></div>
   <div class="page-num">2</div>
@@ -523,9 +524,9 @@
     <span class="page-header-right">INT428 Project Report</span>
   </div>
 
-  <p>The fashion industry is one of the most polluting industries in the world, contributing approximately 10% of global carbon emissions and producing 92 million tonnes of textile waste annually. As awareness grows around environmental sustainability, consumers are increasingly seeking guidance on making ethical fashion choices.</p>
-  <p><strong>BioStyle</strong> is a high-performance, multimodal AI web application developed to serve as a personal ethical fashion advisor. Built with a premium "Nature White" design system and integrated with the <strong>Google Gemini 1.5 Flash AI</strong>, BioStyle provides real-time, conversational guidance and visual analysis on sustainable fabrics, ethical brands, and circular fashion economy.</p>
-  <p>Key highlights include Google Firebase authentication, cloud-synchronized chat history, and advanced Vision AI capabilities to analyze garment tags and fabric textures in real-time.</p>
+  <p>The fashion industry is currently facing a massive sustainability crisis, contributing to a huge amount of global carbon emissions and textile waste every year. Because of this, more and more people want to make better choices when buying clothes but don't always know where to start or how to spot "greenwashing".</p>
+  <p><strong>BioStyle</strong> is a project I developed to help bridge this gap. It's a web application that acts as a personal advisor for ethical fashion. Using the <strong>Google Gemini AI</strong>, it can answer questions about fabrics and brands, and even analyze photos of clothing tags to see if they are actually sustainable.</p>
+  <p>I built this using vanilla JavaScript and CSS to keep it fast and lightweight, while integrating Firebase for the login system so users can save their chats and access them later.</p>
 
   <div class="highlight-box" style="background: linear-gradient(135deg, #f0f7f0, #e0e8e0); border-left-color: #4a7c5a;">
     <strong style="color: #1a3a2a; display: block; margin-bottom: 2mm;">🌐 Project Access Links:</strong>
@@ -571,7 +572,7 @@
   </div>
 
   <h2>4. Literature Review</h2>
-  <p>The slow fashion movement, originating as a counter-response to fast fashion brands like Zara and H&M, advocates for sustainable practices across the fashion supply chain. Key literature informing this project includes:</p>
+  <p>Before starting the project, I researched the slow fashion movement and how it counters fast fashion brands like Zara and H&M. This helped me understand the importance of sustainable practices across the fashion supply chain. Some of the key sources I used for my research include:</p>
   <ul>
     <li><strong>Fletcher & Grose (2012)</strong> — "Fashion & Sustainability: Design for Change" lays the groundwork for understanding sustainable textile design and production.</li>
     <li><strong>Niinimäki et al. (2020)</strong> — Published in Nature Reviews Earth & Environment, this study quantifies the environmental cost of the fashion industry and calls for circular economy models.</li>
@@ -600,7 +601,7 @@
     </div>
     <div class="arch-arrow">↕</div>
     <div class="arch-row">
-      <div class="arch-box">Anthropic Claude API<br><small style="color:#7a9a8a;">(claude-sonnet-4-20250514)</small></div>
+      <div class="arch-box">Google Gemini API<br><small style="color:#7a9a8a;">(gemini-1.5-flash-lite)</small></div>
     </div>
     <div class="arch-arrow">↕</div>
     <div class="arch-row">
@@ -613,7 +614,7 @@
   <ul>
     <li><strong>Single-File Architecture:</strong> The entire application is contained in one HTML file (~45 KB), making deployment trivial.</li>
     <li><strong>No Build Tools Required:</strong> No frameworks, bundlers, or package managers — pure HTML, CSS, and vanilla JavaScript.</li>
-    <li><strong>API-First Design:</strong> AI logic is offloaded to the Claude API, keeping the client lightweight.</li>
+    <li><strong>API-First Design:</strong> AI logic is offloaded to the Google Gemini API, keeping the client lightweight.</li>
   </ul>
 
   <div class="page-footer-line"></div>
@@ -658,17 +659,17 @@
   <span class="func">--border</span>:     <span class="string">#e8ede6</span>;
 }</div>
 
-  <h3>7.2 AI Integration — Claude API</h3>
-  <p>The chat functionality is powered by the Anthropic Claude API. The system prompt enforces strict domain-locking to sustainable fashion topics:</p>
+  <h3>7.2 AI Integration — Google Gemini</h3>
+  <p>The chat functionality is powered by the Google Gemini API. The system prompt enforces strict domain-locking to sustainable fashion topics:</p>
   <div class="code-block"><span class="keyword">async function</span> <span class="func">sendMessage</span>() {
-  <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">'https://api.anthropic.com/v1/messages'</span>, {
+  <span class="keyword">const</span> url = <span class="string">`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${API_KEY}`</span>;
+  <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="func">fetch</span>(url, {
     method: <span class="string">'POST'</span>,
     headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
     body: JSON.<span class="func">stringify</span>({
-      model: <span class="string">'claude-sonnet-4-20250514'</span>,
-      max_tokens: <span class="string">1000</span>,
-      system: SYSTEM_PROMPT,
-      messages: messages
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: geminiMessages,
+      generationConfig: { maxOutputTokens: <span class="string">1000</span> }
     })
   });
 }</div>
@@ -838,27 +839,31 @@
     <li><strong>Wardrobe Tracker:</strong> Let users catalog their clothing for personalized styling and sustainability scoring.</li>
     <li><strong>Carbon Footprint Calculator:</strong> Estimate the environmental impact of a user's fashion choices over time.</li>
     <li><strong>Multi-Language Support:</strong> Expand accessibility by supporting multiple languages including Hindi, Spanish, and French.</li>
-    <li><strong>Progressive Web App (PWA):</strong> Add offline capability, push notifications, and home screen installation.</li>
-    <li><strong>Backend Server:</strong> Implement a Node.js/Express backend to securely manage API keys and add rate limiting.</li>
+    <li><strong>Progressive Web App (PWA):</strong> Add offline capability and home screen installation.</li>
+    <li><strong>Backend Server:</strong> Implement a Node.js backend to manage API keys more securely.</li>
   </ol>
 
   <br>
-  <h2>12. Conclusion</h2>
-  <p>BioStyle successfully demonstrates the application of modern web technologies combined with artificial intelligence to address a real-world sustainability challenge. The project achieves all stated objectives:</p>
+  <h2>12. Challenges Faced</h2>
+  <p>During the development of BioStyle, I encountered several technical hurdles that required a lot of debugging:</p>
   <ul>
-    <li>A visually stunning, responsive single-page application was built using pure HTML, CSS, and JavaScript — no frameworks required.</li>
-    <li>The Claude AI integration provides intelligent, context-aware responses strictly limited to the ethical fashion domain.</li>
-    <li>The UI employs premium design techniques including glassmorphism, CSS animations, custom SVG elements, and an elaborate social sharing system.</li>
-    <li>Quick-access topic cards lower the barrier to entry for new users unfamiliar with sustainable fashion.</li>
+    <li><strong>CSS Animations:</strong> Getting the "Skew Cards" on the welcome screen to animate smoothly from a skewed state to a flat state without affecting the layout was tricky. I had to experiment with different <code>transform-origin</code> values.</li>
+    <li><strong>API Rate Limiting:</strong> Since I'm using the free tier of the Gemini API, I had to implement a simple local caching system to prevent redundant calls and stay within the usage limits.</li>
+    <li><strong>State Management:</strong> Managing chat history and session switching in vanilla JavaScript (without React or Redux) was a challenge. I had to build a custom system using <code>localStorage</code> and array methods to keep everything in sync.</li>
+    <li><strong>Prompt Engineering:</strong> It took several attempts to refine the AI's "system prompt" so that it stays focused on fashion and doesn't answer unrelated questions, which was important for the project's goal.</li>
   </ul>
-  <p>By bridging the knowledge gap between consumers and sustainable fashion practices, BioStyle empowers users to make informed, ethical choices — contributing to a more conscious and environmentally responsible fashion industry.</p>
+
+  <br>
+  <h2>13. Conclusion</h2>
+  <p>Working on BioStyle has been a great learning experience. My main goal was to see if I could build a high-quality, AI-powered tool using just vanilla web technologies, and I'm very happy with the final result. The integration with Gemini AI provides really useful insights into sustainability that would be hard to find otherwise.</p>
+  <p>This project shows that you don't always need heavy frameworks to build modern applications. While there is still room for improvement, like adding a larger database of local brands, BioStyle is a solid starting point for anyone looking to make more ethical fashion choices in their daily life.</p>
 
   <div class="highlight-box">
     <strong>Key Takeaway:</strong> This project demonstrates that powerful, AI-enhanced web applications can be built with vanilla web technologies, achieving excellent performance, zero dependencies, and instant deployability while addressing meaningful sustainability challenges.
   </div>
 
   <br>
-  <h2>13. References</h2>
+  <h2>14. References</h2>
   <ol>
     <li>Fletcher, K. & Grose, L. (2012). <em>Fashion & Sustainability: Design for Change.</em> Laurence King Publishing.</li>
     <li>Niinimäki, K., et al. (2020). "The environmental price of fast fashion." <em>Nature Reviews Earth & Environment</em>, 1(4), 189–200.</li>
