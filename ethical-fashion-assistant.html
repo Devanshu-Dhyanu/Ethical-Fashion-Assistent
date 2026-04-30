@@ -553,7 +553,7 @@
   #user-input::placeholder { color: var(--text-dim); }
   #user-input::-webkit-scrollbar { display: none; }
 
-  #send-btn {
+  #send-btn, #mic-btn {
     width: 38px;
     height: 38px;
     border-radius: 0.6rem;
@@ -567,9 +567,15 @@
     transition: background 0.2s, transform 0.15s;
   }
 
+  #mic-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--accent); }
+  #mic-btn:hover { background: rgba(255,255,255,0.05); }
+
   #send-btn:hover { background: var(--accent); }
-  #send-btn:active { transform: scale(0.93); }
-  #send-btn:disabled { background: var(--border); cursor: not-allowed; }
+  #send-btn:active, #mic-btn:active { transform: scale(0.93); }
+  #send-btn:disabled, #mic-btn:disabled { background: var(--border); cursor: not-allowed; }
+
+  .clear-btn { cursor:pointer; color:var(--text-dim); text-decoration:underline; font-size: 0.75rem; border:none; background:transparent; font-family:'Dosis', sans-serif; letter-spacing: 0.05em; }
+  .clear-btn:hover { color:var(--text-muted); }
 
   .input-footer {
     display: flex;
@@ -959,6 +965,9 @@
     <div class="input-bar">
       <div class="input-row">
         <textarea id="user-input" rows="1" placeholder="Ask about sustainable brands, fabrics, ethical shopping…"></textarea>
+        <button id="mic-btn" onclick="startSpeech()" title="Voice Input">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+        </button>
         <button id="send-btn" onclick="sendMessage()" title="Send">
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
             <path d="M2 15L15 8.5L2 2V7L11 8.5L2 10V15Z" fill="white"/>
@@ -967,7 +976,8 @@
       </div>
       <div class="input-footer">
         <span class="footer-tag"><span class="footer-dot"></span>Ethical fashion only</span>
-        <span class="footer-tag"><span class="footer-dot"></span>Powered by Claude</span>
+        <button class="clear-btn" onclick="clearChat()">Clear History</button>
+        <span class="footer-tag"><span class="footer-dot"></span>Powered by Gemini</span>
         <span class="footer-tag"><span class="footer-dot"></span>Eco-conscious advice</span>
       </div>
     </div>
@@ -1063,7 +1073,7 @@ Refusal template for off-topic: "I'm Verdure, and my expertise is entirely in et
 
 Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold headers for key terms when listing multiple items. Be specific with brand names, certifications, and material science when relevant. Advocate for mindful consumption without judgment.`;
 
-  let messages = [];
+  let messages = JSON.parse(localStorage.getItem('verdure_chat')) || [];
   let isLoading = false;
 
   const welcomeEl   = document.getElementById('welcome');
@@ -1071,6 +1081,40 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
   const messagesEl  = document.getElementById('messages');
   const inputEl     = document.getElementById('user-input');
   const sendBtn     = document.getElementById('send-btn');
+  const micBtn      = document.getElementById('mic-btn');
+
+  // Load local storage messages on init
+  if (messages.length > 0) {
+    showChat();
+    messages.forEach(msg => addMessage(msg.role === 'user' ? 'user' : 'ai', msg.content));
+  }
+
+  function clearChat() {
+    if(confirm("Are you sure you want to clear your chat history?")) {
+      messages = [];
+      localStorage.removeItem('verdure_chat');
+      messagesEl.innerHTML = '';
+      showHome();
+    }
+  }
+
+  function startSpeech() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return alert("Your browser does not support Voice Input.");
+    
+    const recognition = new SpeechRecognition();
+    micBtn.style.color = "#ff605c"; // visual indicator
+    
+    recognition.onresult = (e) => {
+      inputEl.value = e.results[0][0].transcript;
+      inputEl.focus();
+      micBtn.style.color = "var(--accent)";
+    };
+    
+    recognition.onerror = () => micBtn.style.color = "var(--accent)";
+    recognition.onend = () => micBtn.style.color = "var(--accent)";
+    recognition.start();
+  }
 
   inputEl.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -1155,6 +1199,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
 
     messages.push({ role: 'user', content: text });
     addMessage('user', text);
+    localStorage.setItem('verdure_chat', JSON.stringify(messages));
 
     const typingEl = addTyping();
 
@@ -1194,6 +1239,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       typingEl.remove();
       addMessage('ai', reply);
       messages.push({ role: 'assistant', content: reply });
+      localStorage.setItem('verdure_chat', JSON.stringify(messages));
 
     } catch (err) {
       console.error("API Error: ", err);
