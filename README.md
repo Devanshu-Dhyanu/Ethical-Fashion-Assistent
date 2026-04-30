@@ -1,6 +1,6 @@
-# Verdure — Ethical Fashion AI Assistant 🌱
+# BioStyle — Ethical Fashion AI Assistant 🌱
 
-**Verdure** is an AI-powered, ethical fashion advisory web application built for the modern, eco-conscious consumer. Built entirely as an elegant single-page application (SPA), it provides real-time, conversational guidance on sustainable fabrics, ethical brands, greenwashing, and mindful shopping.
+**BioStyle** is an AI-powered, ethical fashion advisory web application built for the modern, eco-conscious consumer. Built entirely as an elegant single-page application (SPA), it provides real-time, conversational guidance on sustainable fabrics, ethical brands, greenwashing, and mindful shopping.
 
 ## 🚀 Features
 - **Real-Time Fashion AI:** Powered by the Google Gemini Flash API to answer domain-specific questions about sustainability.
