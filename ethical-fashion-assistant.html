@@ -1446,10 +1446,69 @@
     }
     .google-btn:hover { transform: scale(1.02); background: #f0f0f0; }
     .google-btn svg { width: 20px; height: 20px; }
+
+    /* ── NEWS TICKER ── */
+    #news-ticker {
+      position: fixed; top: 0; left: 0; width: 100%; height: 28px;
+      background: var(--accent); color: #000; z-index: 2000;
+      display: flex; align-items: center; overflow: hidden;
+      font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .ticker-content {
+      display: flex; white-space: nowrap; animation: tickerScroll 40s linear infinite; gap: 4rem;
+    }
+    @keyframes tickerScroll { 
+      0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } 
+    }
+
+    /* ── IMPACT WIDGET ── */
+    #impact-card {
+      background: rgba(181, 201, 154, 0.08); border: 1px dashed rgba(181, 201, 154, 0.3);
+      border-radius: 12px; padding: 1rem 1.5rem; margin: 1.5rem 0; max-width: 500px;
+      display: flex; align-items: center; gap: 1rem; animation: fadeIn 1s ease;
+    }
+    .impact-icon { font-size: 1.5rem; filter: drop-shadow(0 0 5px var(--accent)); }
+    .impact-text { font-size: 0.9rem; color: var(--text-dim); line-height: 1.4; }
+    .impact-text b { color: var(--accent); }
+
+    /* ── TOGGLE SWITCH ── */
+    .personality-toggle {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem;
+      font-size: 0.8rem; font-weight: 600; color: var(--text-dim);
+    }
+    .switch {
+      position: relative; display: inline-block; width: 34px; height: 18px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #333; transition: .4s; border-radius: 18px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px;
+      background-color: white; transition: .4s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--accent); }
+    input:checked + .slider:before { transform: translateX(16px); }
+
+    /* ── MESSAGE ANIMATION ── */
+    .message { animation: slideUp 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards; opacity: 0; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   </style>
 </head>
 
 <body>
+  
+  <!-- News Ticker -->
+  <div id="news-ticker">
+    <div class="ticker-content">
+      <span>🌿 Patagonia gives away entire company to fight climate scale</span>
+      <span>🧵 New GOTS 7.0 standards released for organic textiles</span>
+      <span>🌍 Fast fashion production down by 12% in EU this month</span>
+      <span>🏷️ Stella McCartney unveils world's first bio-based luxury handbag</span>
+      <span>♻️ 50,000 tonnes of textile waste recycled using new enzyme tech</span>
+    </div>
+  </div>
 
   <!-- Splash Screen -->
   <div id="splash-screen">
@@ -1604,6 +1663,15 @@
         <div class="hero-divider"></div>
       </div>
 
+      <!-- Impact Widget -->
+      <div id="impact-card">
+        <span class="impact-icon">🌍</span>
+        <div class="impact-text">
+          <b>Daily Impact:</b> It takes approximately <span id="fact-val">2,700</span> liters of water to make just one cotton t-shirt. 
+          <i style="font-size:0.8rem; display:block; margin-top:0.2rem;">Choose bio-fabrics to save water.</i>
+        </div>
+      </div>
+
       <p class="welcome-p">Discover ethical brands, eco-friendly materials, and conscious fashion choices — personalized
         just for you.</p>
 
@@ -1653,6 +1721,15 @@
     <!-- Chat Area -->
     <div id="chat-area">
       <div id="messages"></div>
+
+      <!-- Personality Toggle -->
+      <div class="personality-toggle">
+        <span>Expert Mode</span>
+        <label class="switch">
+          <input type="checkbox" id="mode-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
 
       <div class="input-bar">
         <div class="input-row">
@@ -1820,6 +1897,23 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     const micBtn = document.getElementById('mic-btn');
     const authModal = document.getElementById('auth-modal');
     const userProfile = document.getElementById('user-profile');
+    const modeToggle = document.getElementById('mode-toggle');
+
+    const FACTS = [
+      {icon: "🌍", text: "It takes <b>2,700 liters</b> of water to make one cotton t-shirt."},
+      {icon: "🚛", text: "Fashion is responsible for <b>10%</b> of all humanity's carbon emissions."},
+      {icon: "🧵", text: "Polyester takes over <b>200 years</b> to decompose in a landfill."},
+      {icon: "🌊", text: "Microplastics from synthetic clothes account for <b>35%</b> of ocean pollution."},
+      {icon: "👗", text: "The average person buys <b>60% more</b> clothes than 15 years ago but keeps them for half as long."}
+    ];
+
+    // Randomized Fact on Load
+    function updateFact() {
+      const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
+      document.querySelector('.impact-icon').textContent = fact.icon;
+      document.querySelector('.impact-text').innerHTML = `<b>Daily Impact:</b> ${fact.text} <i style="font-size:0.8rem; display:block; margin-top:0.2rem;">Choose bio-fabrics to save water.</i>`;
+    }
+    updateFact();
 
     // Real Firebase Auth Listener
     onAuthStateChanged(auth, (user) => {
@@ -2108,6 +2202,14 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
         }
 
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${API_KEY}`;
+
+        // Modify prompt based on personality toggle
+        let activePrompt = SYSTEM_PROMPT;
+        if (modeToggle && modeToggle.checked) {
+          activePrompt += "\n\nCRITICAL: USER HAS ENABLED EXPERT MODE. Use advanced terminology, provide raw data/percentages if possible, cite specific ISO standards or textile science, and avoid casual language. Be the 'Scientist' version of BioStyle.";
+        } else {
+          activePrompt += "\n\nUSER IS IN FRIENDLY MODE. Keep explanations simple, encouraging, and easy to read. Be a warm 'Advisor' style.";
+        }
 
         // Convert our chat history format to Gemini's expected format
         const geminiMessages = messages.map(msg => ({
