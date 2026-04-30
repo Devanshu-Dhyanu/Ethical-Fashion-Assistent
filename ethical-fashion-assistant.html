@@ -986,6 +986,44 @@
     #mic-btn:active {
       transform: scale(0.93);
     }
+
+    #img-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 0.6rem;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.15s;
+      background: #f8faf8;
+      color: var(--accent);
+      margin-right: 0.4rem;
+    }
+    #img-btn:hover { background: rgba(0, 0, 0, 0.03); }
+
+    /* Image Preview */
+    .img-preview-wrap {
+      display: none;
+      position: relative;
+      margin-bottom: 0.5rem;
+      width: fit-content;
+      animation: fadeIn 0.3s ease;
+    }
+    .img-preview-wrap.active { display: block; }
+    .img-preview-wrap img {
+      width: 60px; height: 60px; border-radius: 8px; object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+    .remove-img {
+      position: absolute; -top: 8px; -right: 8px;
+      background: #ff605c; color: #fff; width: 18px; height: 18px;
+      border-radius: 50%; font-size: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
     
     /* Recording Pulse Animation */
     .recording {
@@ -1759,7 +1797,15 @@
       </div>
 
       <div class="input-bar">
+        <div class="img-preview-wrap" id="img-preview-wrap">
+          <img id="img-preview-src" src="">
+          <button class="remove-img" onclick="removeImage()">×</button>
+        </div>
         <div class="input-row">
+          <input type="file" id="img-input" accept="image/*" hidden onchange="handleImageUpload(event)">
+          <button id="img-btn" onclick="document.getElementById('img-input').click()" title="Upload Image">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </button>
           <textarea id="user-input" rows="1"
             placeholder="Ask about sustainable brands, fabrics, ethical shopping…"></textarea>
           <button id="mic-btn" onclick="startSpeech()" title="Voice Input">
@@ -1915,11 +1961,43 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     const chatAreaEl = document.getElementById('chat-area');
     const messagesEl = document.getElementById('messages');
     const inputEl = document.getElementById('user-input');
-    const sendBtn = document.getElementById('send-btn');
     const micBtn = document.getElementById('mic-btn');
     const authModal = document.getElementById('auth-modal');
     const userProfile = document.getElementById('user-profile');
     const modeToggle = document.getElementById('mode-toggle');
+    const imgInput = document.getElementById('img-input');
+    const imgPreviewWrap = document.getElementById('img-preview-wrap');
+    const imgPreviewSrc = document.getElementById('img-preview-src');
+
+    let currentImageData = null; // Stores {mime_type, data}
+
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const base64 = event.target.result.split(',')[1];
+        currentImageData = {
+          inline_data: {
+            mime_type: file.type,
+            data: base64
+          }
+        };
+        imgPreviewSrc.src = event.target.result;
+        imgPreviewWrap.classList.add('active');
+        inputEl.focus();
+      };
+      reader.readAsDataURL(file);
+    }
+    window.handleImageUpload = handleImageUpload;
+
+    function removeImage() {
+      currentImageData = null;
+      if (imgInput) imgInput.value = '';
+      imgPreviewWrap.classList.remove('active');
+    }
+    window.removeImage = removeImage;
 
     // Real Firebase Auth Listener
     onAuthStateChanged(auth, (user) => {
@@ -2251,6 +2329,13 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
           role: msg.role === 'assistant' ? 'model' : 'user',
           parts: [{ text: msg.content }]
         }));
+
+        // Attach image to the LAST message if present
+        if (currentImageData) {
+           const lastMsg = geminiMessages[geminiMessages.length - 1];
+           lastMsg.parts.push(currentImageData);
+           removeImage(); // Clear preview after sending
+        }
 
         const res = await fetch(url, {
           method: 'POST',
