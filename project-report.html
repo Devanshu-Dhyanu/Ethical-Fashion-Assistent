@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INT 428 Project Report — Verdure: Ethical Fashion AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #1a1a2e;
+    line-height: 1.7;
+    font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── PAGE STRUCTURE ── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 25mm 22mm;
+    page-break-after: always;
+    position: relative;
+    background: #fff;
+  }
+
+  .page:last-child { page-break-after: auto; }
+
+  /* ── COVER PAGE ── */
+  .cover-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    background: linear-gradient(160deg, #0a1628 0%, #0d2137 30%, #0a1628 60%, #111d2e 100%);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .cover-page::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(181,201,154,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cover-page::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(127,176,138,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cover-top {
+    width: 100%;
+    text-align: center;
+    padding: 30mm 20mm 10mm;
+    position: relative;
+    z-index: 2;
+  }
+
+  .univ-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22pt;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #f0e6d3;
+    text-transform: uppercase;
+    margin-bottom: 4mm;
+  }
+
+  .univ-location {
+    font-size: 10pt;
+    font-weight: 400;
+    color: rgba(240,230,211,0.6);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8mm;
+  }
+
+  .cover-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #7fb08a, #b5c99a);
+    border-radius: 2px;
+    margin: 0 auto 12mm;
+  }
+
+  .cover-subject {
+    font-size: 11pt;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #b5c99a;
+    margin-bottom: 3mm;
+  }
+
+  .cover-subject-name {
+    font-size: 10pt;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12mm;
+  }
+
+  .cover-center {
+    width: 100%;
+    text-align: center;
+    padding: 0 20mm;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cover-label {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(181,201,154,0.6);
+    margin-bottom: 4mm;
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32pt;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 3mm;
+    line-height: 1.15;
+  }
+
+  .cover-title span {
+    color: #b5c99a;
+  }
+
+  .cover-subtitle {
+    font-size: 12pt;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.08em;
+    margin-bottom: 10mm;
+  }
+
+  .cover-leaf {
+    font-size: 42pt;
+    margin-bottom: 5mm;
+    display: block;
+  }
+
+  .cover-bottom {
+    width: 100%;
+    padding: 15mm 25mm 25mm;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cover-info-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 10mm;
+  }
+
+  .cover-info-box {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(181,201,154,0.15);
+    border-radius: 10px;
+    padding: 6mm 5mm;
+    text-align: center;
+  }
+
+  .cover-info-box .info-label {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #7fb08a;
+    margin-bottom: 3mm;
+    display: block;
+  }
+
+  .cover-info-box .info-value {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #f0e6d3;
+    display: block;
+  }
+
+  .cover-info-box .info-sub {
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: rgba(255,255,255,0.45);
+    display: block;
+    margin-top: 1mm;
+  }
+
+  .cover-session {
+    text-align: center;
+    margin-top: 8mm;
+    font-size: 9pt;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ── CONTENT PAGES ── */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #e8ede6;
+    padding-bottom: 3mm;
+    margin-bottom: 8mm;
+  }
+
+  .page-header-left {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7fb08a;
+  }
+
+  .page-header-right {
+    font-size: 8pt;
+    font-weight: 500;
+    color: #999;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18pt;
+    font-weight: 800;
+    color: #0a1628;
+    margin-bottom: 5mm;
+    padding-bottom: 2mm;
+    border-bottom: 2px solid #b5c99a;
+    display: inline-block;
+  }
+
+  h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #1a3a2a;
+    margin-top: 6mm;
+    margin-bottom: 3mm;
+  }
+
+  h4 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #2a5a3a;
+    margin-top: 4mm;
+    margin-bottom: 2mm;
+  }
+
+  p {
+    margin-bottom: 3mm;
+    text-align: justify;
+    font-size: 11pt;
+  }
+
+  ul, ol {
+    padding-left: 6mm;
+    margin-bottom: 3mm;
+  }
+
+  li {
+    margin-bottom: 1.5mm;
+    font-size: 11pt;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, #f0f7ed, #e8f0e5);
+    border-left: 4px solid #7fb08a;
+    padding: 4mm 5mm;
+    border-radius: 0 6px 6px 0;
+    margin: 4mm 0;
+    font-size: 10.5pt;
+  }
+
+  .tech-badge {
+    display: inline-block;
+    background: #0a1628;
+    color: #b5c99a;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 1.5mm 3mm;
+    border-radius: 4px;
+    margin: 1mm 1mm 1mm 0;
+    letter-spacing: 0.05em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4mm 0;
+    font-size: 10pt;
+  }
+
+  th {
+    background: #0a1628;
+    color: #b5c99a;
+    padding: 3mm 4mm;
+    text-align: left;
+    font-weight: 700;
+    font-size: 9pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 2.5mm 4mm;
+    border-bottom: 1px solid #e8ede6;
+  }
+
+  tr:nth-child(even) td { background: #f8faf7; }
+
+  code {
+    font-family: 'Courier New', monospace;
+    background: #f0f4ee;
+    color: #2a5a3a;
+    padding: 0.5mm 2mm;
+    border-radius: 3px;
+    font-size: 9.5pt;
+  }
+
+  .code-block {
+    background: #0d1b2a;
+    color: #b5c99a;
+    padding: 4mm 5mm;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 8.5pt;
+    line-height: 1.9;
+    margin: 4mm 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  .code-block .keyword { color: #c792ea; }
+  .code-block .string { color: #c3e88d; }
+  .code-block .comment { color: #546e7a; }
+  .code-block .func { color: #82aaff; }
+
+  .page-num {
+    position: absolute;
+    bottom: 15mm;
+    right: 22mm;
+    font-size: 9pt;
+    font-weight: 600;
+    color: #7fb08a;
+  }
+
+  .page-footer-line {
+    position: absolute;
+    bottom: 20mm;
+    left: 22mm;
+    right: 22mm;
+    border-top: 1px solid #e8ede6;
+  }
+
+  .fig-caption {
+    font-size: 9pt;
+    font-weight: 500;
+    color: #666;
+    text-align: center;
+    margin-top: 2mm;
+    font-style: italic;
+  }
+
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 2mm 0;
+    border-bottom: 1px dotted #ccc;
+    font-size: 11pt;
+  }
+
+  .toc-item span:first-child { font-weight: 600; color: #1a3a2a; }
+  .toc-item span:last-child { font-weight: 700; color: #7fb08a; }
+
+  .arch-diagram {
+    background: linear-gradient(135deg, #f8faf7, #f0f4ee);
+    border: 1px solid #d4e0d0;
+    border-radius: 8px;
+    padding: 6mm;
+    margin: 5mm 0;
+    text-align: center;
+  }
+
+  .arch-row {
+    display: flex;
+    justify-content: center;
+    gap: 4mm;
+    margin: 3mm 0;
+  }
+
+  .arch-box {
+    background: #0a1628;
+    color: #b5c99a;
+    padding: 3mm 5mm;
+    border-radius: 5px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-align: center;
+    min-width: 30mm;
+  }
+
+  .arch-arrow {
+    font-size: 14pt;
+    color: #7fb08a;
+    line-height: 1;
+  }
+
+  .screenshot-placeholder {
+    background: linear-gradient(135deg, #0a1628, #111d2e);
+    border-radius: 8px;
+    padding: 15mm 10mm;
+    text-align: center;
+    color: #b5c99a;
+    font-weight: 600;
+    font-size: 11pt;
+    margin: 4mm 0;
+    border: 1px solid rgba(181,201,154,0.2);
+  }
+
+  @media print {
+    body { margin: 0; }
+    .page { margin: 0; box-shadow: none; }
+  }
+
+  @media screen {
+    body { background: #e0e0e0; padding: 10mm 0; }
+    .page { box-shadow: 0 2px 20px rgba(0,0,0,0.15); margin-bottom: 10mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ COVER PAGE ════════════════ -->
+<div class="page cover-page">
+  <div class="cover-top">
+    <div class="univ-name">Lovely Professional University</div>
+    <div class="univ-location">Phagwara, Punjab — 144411</div>
+    <div class="cover-divider"></div>
+    <div class="cover-subject">INT 428 — Web Technology</div>
+    <div class="cover-subject-name">Project Report</div>
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-label">Project Title</div>
+    <span class="cover-leaf">🌿</span>
+    <div class="cover-title">Verdure — <span>Ethical Fashion AI Assistant</span></div>
+    <div class="cover-subtitle">An AI-Powered Web Application for Sustainable Fashion Guidance</div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-info-grid">
+      <div class="cover-info-box">
+        <span class="info-label">Submitted To</span>
+        <span class="info-value">Sumit Mittu</span>
+        <span class="info-sub">Faculty, INT 428</span>
+      </div>
+      <div class="cover-info-box">
+        <span class="info-label">Submitted By</span>
+        <span class="info-value">Devanshu Kumar</span>
+        <span class="info-sub">Section: 224OM &nbsp;|&nbsp; Roll No: 57</span>
+      </div>
+    </div>
+    <div class="cover-session">Academic Session 2025–2026</div>
+  </div>
+</div>
+
+<!-- ════════════════ TABLE OF CONTENTS ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h2>Table of Contents</h2>
+  <br><br>
+
+  <div class="toc-item"><span>1. &nbsp;Introduction</span><span>3</span></div>
+  <div class="toc-item"><span>2. &nbsp;Problem Statement</span><span>3</span></div>
+  <div class="toc-item"><span>3. &nbsp;Objectives</span><span>3</span></div>
+  <div class="toc-item"><span>4. &nbsp;Literature Review</span><span>4</span></div>
+  <div class="toc-item"><span>5. &nbsp;System Architecture &amp; Design</span><span>4</span></div>
+  <div class="toc-item"><span>6. &nbsp;Technology Stack</span><span>5</span></div>
+  <div class="toc-item"><span>7. &nbsp;Implementation Details</span><span>5</span></div>
+  <div class="toc-item"><span>8. &nbsp;Features</span><span>7</span></div>
+  <div class="toc-item"><span>9. &nbsp;UI/UX Design</span><span>7</span></div>
+  <div class="toc-item"><span>10. Testing &amp; Results</span><span>8</span></div>
+  <div class="toc-item"><span>11. Future Enhancements</span><span>8</span></div>
+  <div class="toc-item"><span>12. Conclusion</span><span>9</span></div>
+  <div class="toc-item"><span>13. References</span><span>9</span></div>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">2</div>
+</div>
+
+<!-- ════════════════ PAGE 3 ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h2>1. Introduction</h2>
+  <p>The fashion industry is one of the most polluting industries in the world, contributing approximately 10% of global carbon emissions and producing 92 million tonnes of textile waste annually. As awareness grows around environmental sustainability, consumers are increasingly seeking guidance on making ethical fashion choices.</p>
+  <p><strong>Verdure</strong> is an AI-powered web application designed to serve as a personal ethical fashion advisor. Built using modern web technologies (HTML5, CSS3, JavaScript) and integrated with the Anthropic Claude API, Verdure provides real-time, conversational guidance on sustainable fabrics, ethical brands, certifications, capsule wardrobes, greenwashing awareness, and garment care — all within a beautifully designed, responsive interface.</p>
+  <p>The name "Verdure" represents lush green growth, symbolizing the app's mission to promote a greener approach to fashion consumption.</p>
+
+  <br>
+  <h2>2. Problem Statement</h2>
+  <p>Despite growing consumer interest in sustainable fashion, there is a significant knowledge gap. Consumers struggle to:</p>
+  <ul>
+    <li>Identify truly sustainable fabrics versus marketing claims (greenwashing)</li>
+    <li>Discover verified ethical brands and understand certifications such as GOTS, Fair Trade, and B Corp</li>
+    <li>Build a mindful wardrobe without overspending</li>
+    <li>Understand the environmental and social impact of their clothing choices</li>
+  </ul>
+  <p>There is a need for an intelligent, accessible, and user-friendly platform that can provide personalized, context-aware guidance on ethical fashion in real-time.</p>
+
+  <br>
+  <h2>3. Objectives</h2>
+  <ol>
+    <li>To design and develop a responsive, single-page web application for ethical fashion guidance.</li>
+    <li>To integrate a Large Language Model (Claude AI) to provide intelligent, conversational responses on sustainable fashion topics.</li>
+    <li>To implement strict domain-lock ensuring the AI only responds to fashion-related queries.</li>
+    <li>To create an aesthetically premium, dark-themed UI with glassmorphism, animations, and micro-interactions.</li>
+    <li>To provide quick-access topic cards for common ethical fashion questions.</li>
+    <li>To integrate social media sharing capabilities for community building.</li>
+  </ol>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">3</div>
+</div>
+
+<!-- ════════════════ PAGE 4 ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h2>4. Literature Review</h2>
+  <p>The slow fashion movement, originating as a counter-response to fast fashion brands like Zara and H&M, advocates for sustainable practices across the fashion supply chain. Key literature informing this project includes:</p>
+  <ul>
+    <li><strong>Fletcher & Grose (2012)</strong> — "Fashion & Sustainability: Design for Change" lays the groundwork for understanding sustainable textile design and production.</li>
+    <li><strong>Niinimäki et al. (2020)</strong> — Published in Nature Reviews Earth & Environment, this study quantifies the environmental cost of the fashion industry and calls for circular economy models.</li>
+    <li><strong>UNEP (2023)</strong> — UN Environment Programme reports that the fashion industry uses 93 billion cubic meters of water annually and contributes to 20% of global wastewater.</li>
+    <li><strong>LLMs in Consumer Applications</strong> — Recent advancements in Large Language Models (e.g., GPT, Claude) demonstrate the viability of AI-powered conversational assistants for domain-specific guidance.</li>
+  </ul>
+
+  <div class="highlight-box">
+    <strong>Key Insight:</strong> While several sustainability-rating platforms exist (e.g., Good On You, DoneGood), none offer real-time, conversational, AI-powered interaction tailored specifically to individual consumer queries. Verdure fills this gap.
+  </div>
+
+  <br>
+  <h2>5. System Architecture & Design</h2>
+  <h3>5.1 High-Level Architecture</h3>
+  <p>Verdure follows a client-side single-page application (SPA) architecture. The entire application runs in the browser with no backend server — it directly communicates with the Anthropic Claude API for AI responses.</p>
+
+  <div class="arch-diagram">
+    <strong style="font-size:10pt; color:#1a3a2a;">System Architecture Diagram</strong>
+    <br><br>
+    <div class="arch-row">
+      <div class="arch-box">User Browser<br><small style="color:#7a9a8a;">(HTML/CSS/JS)</small></div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-row">
+      <div class="arch-box">Welcome Screen<br><small style="color:#7a9a8a;">(Hero + Topic Cards)</small></div>
+      <div class="arch-box">Chat Interface<br><small style="color:#7a9a8a;">(Messages + Input)</small></div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-row">
+      <div class="arch-box">Anthropic Claude API<br><small style="color:#7a9a8a;">(claude-sonnet-4-20250514)</small></div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-row">
+      <div class="arch-box">System Prompt<br><small style="color:#7a9a8a;">(Domain-Locked)</small></div>
+      <div class="arch-box">Conversation History<br><small style="color:#7a9a8a;">(In-Memory State)</small></div>
+    </div>
+  </div>
+
+  <h3>5.2 Design Approach</h3>
+  <ul>
+    <li><strong>Single-File Architecture:</strong> The entire application is contained in one HTML file (~45 KB), making deployment trivial.</li>
+    <li><strong>No Build Tools Required:</strong> No frameworks, bundlers, or package managers — pure HTML, CSS, and vanilla JavaScript.</li>
+    <li><strong>API-First Design:</strong> AI logic is offloaded to the Claude API, keeping the client lightweight.</li>
+  </ul>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">4</div>
+</div>
+
+<!-- ════════════════ PAGE 5 ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h2>6. Technology Stack</h2>
+
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+    <tr><td>Structure</td><td>HTML5</td><td>Semantic markup, accessibility</td></tr>
+    <tr><td>Styling</td><td>CSS3 (Custom Properties + Animations)</td><td>Dark theme, glassmorphism, micro-interactions</td></tr>
+    <tr><td>Logic</td><td>Vanilla JavaScript (ES6+)</td><td>DOM manipulation, API calls, state management</td></tr>
+    <tr><td>AI Engine</td><td>Anthropic Claude API (claude-sonnet-4-20250514)</td><td>Natural language processing for fashion queries</td></tr>
+    <tr><td>Typography</td><td>Google Fonts (Dosis)</td><td>Modern, clean typeface throughout the UI</td></tr>
+    <tr><td>Icons</td><td>Inline SVG</td><td>Social media icons, leaf decorations, UI elements</td></tr>
+    <tr><td>Deployment</td><td>Static HTML File</td><td>Zero-config deployment, works on any web server</td></tr>
+  </table>
+
+  <div class="highlight-box">
+    <strong>Design Philosophy:</strong> By avoiding frameworks like React or Vue, the application achieves instant load times, zero dependency vulnerabilities, and maximum portability.
+  </div>
+
+  <br>
+  <h2>7. Implementation Details</h2>
+
+  <h3>7.1 CSS Design System (Custom Properties)</h3>
+  <p>The application uses CSS custom properties (variables) to maintain a consistent design language:</p>
+  <div class="code-block"><span class="comment">/* Core Design Tokens */</span>
+<span class="keyword">:root</span> {
+  <span class="func">--bg-deep</span>:    <span class="string">#000000</span>;
+  <span class="func">--accent</span>:     <span class="string">#b5c99a</span>;    <span class="comment">/* Primary green */</span>
+  <span class="func">--accent3</span>:    <span class="string">#7fb08a</span>;    <span class="comment">/* Secondary green */</span>
+  <span class="func">--text-main</span>:  <span class="string">#e8ede6</span>;
+  <span class="func">--text-muted</span>: <span class="string">#7a9180</span>;
+  <span class="func">--border</span>:     <span class="string">#2a3d31</span>;
+}</div>
+
+  <h3>7.2 AI Integration — Claude API</h3>
+  <p>The chat functionality is powered by the Anthropic Claude API. The system prompt enforces strict domain-locking to sustainable fashion topics:</p>
+  <div class="code-block"><span class="keyword">async function</span> <span class="func">sendMessage</span>() {
+  <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">'https://api.anthropic.com/v1/messages'</span>, {
+    method: <span class="string">'POST'</span>,
+    headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+    body: JSON.<span class="func">stringify</span>({
+      model: <span class="string">'claude-sonnet-4-20250514'</span>,
+      max_tokens: <span class="string">1000</span>,
+      system: SYSTEM_PROMPT,
+      messages: messages
+    })
+  });
+}</div>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">5</div>
+</div>
+
+<!-- ════════════════ PAGE 6 ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h3>7.3 Domain-Locked System Prompt</h3>
+  <p>A carefully engineered system prompt ensures the AI only responds to fashion-related queries and politely declines off-topic questions:</p>
+  <div class="highlight-box">
+    <strong>Strict Domain Rule:</strong> "You ONLY answer questions related to fashion, clothing, sustainability, ethical sourcing, textiles. If a user asks about anything outside this domain, you must politely but firmly decline and redirect them back to sustainable fashion topics."
+  </div>
+
+  <h3>7.4 Real-Time Chat Engine</h3>
+  <p>The chat system maintains conversation history in-memory for context-aware multi-turn conversations:</p>
+  <ul>
+    <li><strong>Message Queue:</strong> User and assistant messages are stored in a JavaScript array, sent with each API call to maintain context.</li>
+    <li><strong>Typing Indicator:</strong> Animated bouncing dots display while waiting for the AI response.</li>
+    <li><strong>Markdown Rendering:</strong> The <code>formatText()</code> function converts bold, italic, and list markdown to HTML.</li>
+    <li><strong>Auto-resize Textarea:</strong> The input field dynamically grows with content up to 120px max height.</li>
+  </ul>
+
+  <h3>7.5 Quick-Access Topic Cards</h3>
+  <p>Six pre-built topic cards on the welcome screen allow users to quickly explore common sustainable fashion topics:</p>
+  <table>
+    <tr><th>#</th><th>Card Title</th><th>Mapped Query</th></tr>
+    <tr><td>1</td><td>Sustainable Fabrics</td><td>"What are the most sustainable fabrics?"</td></tr>
+    <tr><td>2</td><td>Ethical Brands</td><td>"Recommend ethical clothing brands"</td></tr>
+    <tr><td>3</td><td>Capsule Wardrobe</td><td>"How to build a capsule wardrobe sustainably?"</td></tr>
+    <tr><td>4</td><td>Certifications</td><td>"What certifications ensure ethical clothing?"</td></tr>
+    <tr><td>5</td><td>Greenwashing</td><td>"What is greenwashing and how to avoid it?"</td></tr>
+    <tr><td>6</td><td>Care & Longevity</td><td>"How to care for clothes to make them last?"</td></tr>
+  </table>
+
+  <h3>7.6 CSS Animations & Micro-Interactions</h3>
+  <p>The application employs several CSS animations to enhance user experience:</p>
+  <ul>
+    <li><strong>fadeUp:</strong> Hero content entrance animation with cubic-bezier easing</li>
+    <li><strong>pulse:</strong> Live status indicator dot animation</li>
+    <li><strong>typingBounce:</strong> Three-dot typing indicator with staggered delays</li>
+    <li><strong>msgIn:</strong> Smooth message bubble entrance animation</li>
+    <li><strong>Skew Cards:</strong> Topic cards use CSS <code>skewX(10deg)</code> transform with hover-to-expand interaction, growing from 120px to 254px height</li>
+    <li><strong>Social Tooltips:</strong> Elaborate hover-reveal tooltip system for social sharing with radial positioning</li>
+  </ul>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">6</div>
+</div>
+
+<!-- ════════════════ PAGE 7 ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h2>8. Features</h2>
+
+  <h3>8.1 Core Features</h3>
+  <table>
+    <tr><th>Feature</th><th>Description</th></tr>
+    <tr><td>AI Chat Interface</td><td>Real-time conversational AI for sustainable fashion queries with multi-turn context</td></tr>
+    <tr><td>Domain-Locked AI</td><td>System prompt ensures responses are strictly limited to ethical fashion topics</td></tr>
+    <tr><td>Quick Topic Cards</td><td>Six interactive, animated cards for common sustainability questions</td></tr>
+    <tr><td>Markdown Rendering</td><td>AI responses support bold, italic, and list formatting</td></tr>
+    <tr><td>Typing Indicator</td><td>Animated dots show while AI is generating a response</td></tr>
+    <tr><td>Social Sharing</td><td>Integrated tooltip system with Twitter, Facebook, WhatsApp, Discord, Pinterest, Dribbble, GitHub, Reddit</td></tr>
+    <tr><td>Instagram & Facebook Footer</td><td>Rich hover tooltips showing profile previews for Verdure's social accounts</td></tr>
+    <tr><td>Responsive Design</td><td>Fully responsive layout that adapts to different screen sizes</td></tr>
+  </table>
+
+  <h3>8.2 UI/UX Highlights</h3>
+  <ul>
+    <li><strong>Dark Theme:</strong> Pure black (#000000) background with green accent palette for a premium, eco-conscious aesthetic</li>
+    <li><strong>Glassmorphism:</strong> Topic cards feature <code>backdrop-filter: blur(5px)</code> and semi-transparent backgrounds</li>
+    <li><strong>Ambient Gradients:</strong> Subtle radial gradient background effects create depth</li>
+    <li><strong>SVG Decorations:</strong> Custom leaf SVGs positioned as decorative elements</li>
+    <li><strong>Custom Scrollbar:</strong> Thin, styled scrollbar matching the green theme</li>
+  </ul>
+
+  <br>
+  <h2>9. UI/UX Design</h2>
+
+  <h3>9.1 Color Palette</h3>
+  <table>
+    <tr><th>Color</th><th>Hex Code</th><th>Usage</th></tr>
+    <tr><td style="color:#b5c99a;">■ Primary Accent</td><td>#b5c99a</td><td>Highlights, CTA button, accent text</td></tr>
+    <tr><td style="color:#7fb08a;">■ Secondary Accent</td><td>#7fb08a</td><td>Links, icons, send button, dividers</td></tr>
+    <tr><td style="color:#d4a574;">■ Warm Accent</td><td>#d4a574</td><td>Complementary warm highlights</td></tr>
+    <tr><td style="background:#000;color:#fff;">■ Background</td><td>#000000</td><td>Page background, navbar, footer</td></tr>
+    <tr><td style="color:#e8ede6;">■ Text Primary</td><td>#e8ede6</td><td>Main body text, headings</td></tr>
+    <tr><td style="color:#7a9180;">■ Text Muted</td><td>#7a9180</td><td>Secondary text, descriptions</td></tr>
+  </table>
+
+  <h3>9.2 Typography</h3>
+  <p>The application uses <strong>Dosis</strong> from Google Fonts — a rounded sans-serif typeface with weights from 300 (Light) to 800 (Extra-Bold). This creates a friendly, approachable feel while maintaining readability across all device sizes.</p>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">7</div>
+</div>
+
+<!-- ════════════════ PAGE 8 ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h2>10. Testing & Results</h2>
+
+  <h3>10.1 Functional Testing</h3>
+  <table>
+    <tr><th>Test Case</th><th>Input</th><th>Expected Result</th><th>Status</th></tr>
+    <tr><td>On-Topic Query</td><td>"What is organic cotton?"</td><td>Detailed response about organic cotton</td><td>✅ Pass</td></tr>
+    <tr><td>Off-Topic Query</td><td>"What is the capital of France?"</td><td>Polite refusal + redirect to fashion</td><td>✅ Pass</td></tr>
+    <tr><td>Quick Card Click</td><td>Click "Sustainable Fabrics"</td><td>Chat opens with pre-filled query</td><td>✅ Pass</td></tr>
+    <tr><td>Empty Input</td><td>Press Send with no text</td><td>No message sent (blocked)</td><td>✅ Pass</td></tr>
+    <tr><td>Multi-turn Chat</td><td>Follow-up questions</td><td>Context-aware responses</td><td>✅ Pass</td></tr>
+    <tr><td>Enter Key Send</td><td>Type + press Enter</td><td>Message sent without newline</td><td>✅ Pass</td></tr>
+    <tr><td>Shift+Enter</td><td>Press Shift+Enter</td><td>Newline inserted in input</td><td>✅ Pass</td></tr>
+  </table>
+
+  <h3>10.2 UI/UX Testing</h3>
+  <table>
+    <tr><th>Test</th><th>Result</th></tr>
+    <tr><td>Card hover expand animation</td><td>✅ Smooth transition from 120px → 254px</td></tr>
+    <tr><td>Typing indicator animation</td><td>✅ Three-dot bounce with staggered delays</td></tr>
+    <tr><td>Message entrance animation</td><td>✅ Smooth fadeUp effect on new messages</td></tr>
+    <tr><td>Social tooltip hover</td><td>✅ All 8 social platform tooltips display correctly</td></tr>
+    <tr><td>Instagram/Facebook profile preview</td><td>✅ Rich tooltip with 3D layer animation</td></tr>
+    <tr><td>Custom scrollbar styling</td><td>✅ Thin green-themed scrollbar in chat area</td></tr>
+    <tr><td>Input auto-resize</td><td>✅ Textarea grows dynamically up to 120px</td></tr>
+  </table>
+
+  <h3>10.3 Browser Compatibility</h3>
+  <table>
+    <tr><th>Browser</th><th>Compatibility</th></tr>
+    <tr><td>Google Chrome (v100+)</td><td>✅ Fully Compatible</td></tr>
+    <tr><td>Mozilla Firefox (v100+)</td><td>✅ Fully Compatible</td></tr>
+    <tr><td>Microsoft Edge (v100+)</td><td>✅ Fully Compatible</td></tr>
+    <tr><td>Safari (v15+)</td><td>✅ Compatible (with -webkit prefixes)</td></tr>
+  </table>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">8</div>
+</div>
+
+<!-- ════════════════ PAGE 9 ════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-left">Verdure — Ethical Fashion AI</span>
+    <span class="page-header-right">INT 428 Project Report</span>
+  </div>
+
+  <h2>11. Future Enhancements</h2>
+  <ol>
+    <li><strong>User Authentication:</strong> Allow users to create accounts and save chat history for personalized recommendations over time.</li>
+    <li><strong>Brand Database Integration:</strong> Connect to sustainability rating APIs (e.g., Good On You) for real-time brand scoring.</li>
+    <li><strong>Image Recognition:</strong> Add camera/upload functionality to analyze clothing labels and identify materials.</li>
+    <li><strong>Wardrobe Tracker:</strong> Let users catalog their clothing for personalized styling and sustainability scoring.</li>
+    <li><strong>Carbon Footprint Calculator:</strong> Estimate the environmental impact of a user's fashion choices over time.</li>
+    <li><strong>Multi-Language Support:</strong> Expand accessibility by supporting multiple languages including Hindi, Spanish, and French.</li>
+    <li><strong>Progressive Web App (PWA):</strong> Add offline capability, push notifications, and home screen installation.</li>
+    <li><strong>Backend Server:</strong> Implement a Node.js/Express backend to securely manage API keys and add rate limiting.</li>
+  </ol>
+
+  <br>
+  <h2>12. Conclusion</h2>
+  <p>Verdure successfully demonstrates the application of modern web technologies combined with artificial intelligence to address a real-world sustainability challenge. The project achieves all stated objectives:</p>
+  <ul>
+    <li>A visually stunning, responsive single-page application was built using pure HTML, CSS, and JavaScript — no frameworks required.</li>
+    <li>The Claude AI integration provides intelligent, context-aware responses strictly limited to the ethical fashion domain.</li>
+    <li>The UI employs premium design techniques including glassmorphism, CSS animations, custom SVG elements, and an elaborate social sharing system.</li>
+    <li>Quick-access topic cards lower the barrier to entry for new users unfamiliar with sustainable fashion.</li>
+  </ul>
+  <p>By bridging the knowledge gap between consumers and sustainable fashion practices, Verdure empowers users to make informed, ethical choices — contributing to a more conscious and environmentally responsible fashion industry.</p>
+
+  <div class="highlight-box">
+    <strong>Key Takeaway:</strong> This project demonstrates that powerful, AI-enhanced web applications can be built with vanilla web technologies, achieving excellent performance, zero dependencies, and instant deployability while addressing meaningful sustainability challenges.
+  </div>
+
+  <br>
+  <h2>13. References</h2>
+  <ol>
+    <li>Fletcher, K. & Grose, L. (2012). <em>Fashion & Sustainability: Design for Change.</em> Laurence King Publishing.</li>
+    <li>Niinimäki, K., et al. (2020). "The environmental price of fast fashion." <em>Nature Reviews Earth & Environment</em>, 1(4), 189–200.</li>
+    <li>UNEP (2023). "Sustainability and Circularity in the Textile Value Chain." United Nations Environment Programme.</li>
+    <li>Anthropic (2025). "Claude API Documentation." <em>https://docs.anthropic.com</em></li>
+    <li>MDN Web Docs. "CSS Custom Properties." <em>https://developer.mozilla.org</em></li>
+    <li>Google Fonts. "Dosis Typeface." <em>https://fonts.google.com/specimen/Dosis</em></li>
+    <li>Good On You (2024). "How We Rate Fashion Brands." <em>https://goodonyou.eco</em></li>
+  </ol>
+
+  <div class="page-footer-line"></div>
+  <div class="page-num">9</div>
+</div>
+
+</body>
+</html>

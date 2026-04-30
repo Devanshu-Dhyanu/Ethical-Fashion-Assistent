@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verdure — Ethical Fashion AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep:    #000000;
+    --bg-mid:     #0a0a0a;
+    --bg-card:    #111111;
+    --bg-input:   #141414;
+    --accent:     #b5c99a;
+    --accent2:    #d4a574;
+    --accent3:    #7fb08a;
+    --text-main:  #e8ede6;
+    --text-muted: #7a9180;
+    --text-dim:   #4d6458;
+    --border:     #2a3d31;
+    --border-light: #3a5040;
+    --user-bubble: #1a1a1a;
+    --ai-bubble:   #111111;
+    --leaf1: #4a7c5a;
+    --leaf2: #6a9e7a;
+  }
+
+  body {
+    font-family: 'Dosis', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 20%, rgba(74,124,90,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 80%, rgba(106,158,122,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 68px;
+    background: #000000;
+    border-bottom: 1px solid rgba(181,201,154,0.12);
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent3) 30%, var(--accent) 60%, transparent);
+    opacity: 0.5;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .logo-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: rgba(127,176,138,0.12);
+    border: 1px solid rgba(127,176,138,0.25);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-text {
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--text-main);
+    text-transform: uppercase;
+  }
+
+  .logo-text span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    border: none; background: transparent;
+    font-family: 'Dosis', sans-serif;
+  }
+
+  .nav-link:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+
+  .nav-cta {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #0b1812;
+    background: var(--accent);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 0.75rem;
+    font-family: 'Dosis', sans-serif;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .nav-cta:hover { background: #c8ddb0; transform: translateY(-1px); }
+
+  /* pulse dot */
+  .nav-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #5ecb8a;
+    display: inline-block;
+    margin-right: 5px;
+    animation: pulse 2.2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(0.75); }
+  }
+
+  /* ── SOCIAL SHARE TOOLTIP ── */
+  .tooltip-container {
+    background: linear-gradient(138deg, rgb(0,0,0) 15%, rgb(0,31,46) 65%);
+    position: relative;
+    cursor: pointer;
+    font-size: 17px;
+    padding: 0.7em 0.7em;
+    border-radius: 50px;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3);
+    flex-shrink: 0;
+  }
+  .tooltip-container:hover { background: #fff; transition: all 0.9s; }
+  .tooltip-container .text { display: flex; align-items: center; justify-content: center; fill: #fff; transition: all 0.2s; }
+  .tooltip-container:hover .text { fill: rgb(0,0,0); transition: all 0.9s; }
+
+  .tooltip1,.tooltip2,.tooltip3,.tooltip4,.tooltip5,.tooltip6,.tooltip7,.tooltip8 {
+    position: absolute; opacity: 0; visibility: hidden;
+    background: #fff; fill: #001722; padding: 10px; border-radius: 50px;
+    transition: opacity 0.3s, visibility 0.3s, top 0.3s, background 0.3s;
+    z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .tooltip1 { top: 100%; left: 50%; transform: translateX(-50%); }
+  .tooltip-container:hover .tooltip1 { top: 150%; opacity: 1; visibility: visible; background: #fff; border-radius: 50px; transform: translate(-50%,-5px); display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip1:hover { background: #03a9f4; fill: #fff; }
+
+  .tooltip2 { top: 100%; left: 50%; transform: translateX(-50%); }
+  .tooltip-container:hover .tooltip2 { top: -120%; opacity: 1; visibility: visible; background: #fff; transform: translate(-50%,-5px); border-radius: 50px; display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip2:hover { background: #001722; fill: #fff; }
+
+  .tooltip3 { top: 100%; left: 60%; transform: translateX(80%); }
+  .tooltip-container:hover .tooltip3 { top: 10%; opacity: 1; visibility: visible; background: #fff; transform: translate(85%,-5px); border-radius: 50px; display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip3:hover { background: #1db954; fill: #000; }
+
+  .tooltip4 { top: 100%; left: -190%; transform: translateX(70%); }
+  .tooltip-container:hover .tooltip4 { top: 10%; opacity: 1; visibility: visible; background: #fff; transform: translate(70%,-5px); border-radius: 50px; display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip4:hover { background: #8c9eff; fill: #fff; }
+
+  .tooltip5 { top: 100%; left: -145%; transform: translateX(70%); }
+  .tooltip-container:hover .tooltip5 { top: -78%; opacity: 1; visibility: visible; background: #fff; transform: translate(70%,-5px); border-radius: 50px; display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip5:hover { background: #bd081c; fill: #fff; }
+
+  .tooltip6 { top: 100%; left: 35%; transform: translateX(70%); }
+  .tooltip-container:hover .tooltip6 { top: -79%; opacity: 1; visibility: visible; background: #fff; transform: translate(70%,-5px); border-radius: 50px; display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip6:hover { background: #ea4c89; fill: #fff; }
+
+  .tooltip7 { top: 100%; left: 39%; transform: translateX(70%); }
+  .tooltip-container:hover .tooltip7 { top: 104%; opacity: 1; visibility: visible; background: #fff; transform: translate(70%,-5px); border-radius: 50px; display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip7:hover { background: #000; fill: #fff; }
+
+  .tooltip8 { top: 100%; left: -150%; transform: translateX(70%); }
+  .tooltip-container:hover .tooltip8 { top: 101%; opacity: 1; visibility: visible; background: #fff; transform: translate(70%,-5px); border-radius: 50px; display: flex; align-items: center; justify-content: center; }
+  .tooltip-container:hover .tooltip8:hover { background: #ff4500; fill: #fff; }
+
+  .tooltip9 { position: absolute; top: 0; left: -115%; opacity: 0; visibility: hidden; width: 150px; height: 150px; z-index: -1; }
+  .tooltip-container:hover .tooltip9 { top: -110%; opacity: 1; visibility: visible; border-radius: 50%; z-index: -1; }
+
+  /* Main layout */
+  main {
+    position: relative;
+    z-index: 5;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 860px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    overflow: hidden;
+  }
+
+  /* ── HERO / WELCOME ── */
+  #welcome {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.2rem;
+    padding: 2rem 0 1rem;
+    text-align: center;
+    animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(127,176,138,0.1);
+    border: 1px solid rgba(127,176,138,0.22);
+    border-radius: 2rem;
+    padding: 5px 14px 5px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent3);
+  }
+
+  .hero-title-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .welcome-h {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .welcome-h .line2 {
+    display: block;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .welcome-h .hl {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 800;
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent3), var(--accent));
+    border-radius: 2px;
+    margin: 0.5rem auto 0;
+  }
+
+  .welcome-p {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    max-width: 420px;
+    line-height: 1.75;
+    letter-spacing: 0.02em;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-6px); }
+  }
+
+  /* ── CARDS ── */
+  .chips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 660px;
+  }
+
+  .chip {
+    width: 190px;
+    height: 120px;
+    padding: 0.5rem;
+    background: rgba(198, 198, 198, 0.34);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.440);
+    border-left: 2px rgba(255, 255, 255, 0.545) outset;
+    box-shadow: -40px 50px 30px rgba(0, 0, 0, 0.280);
+    transform: skewX(10deg);
+    transition: .4s;
+    overflow: hidden;
+    color: white;
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    height: 254px;
+    transform: skew(0deg);
+  }
+
+  .chip-dots {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-self: flex-start;
+  }
+
+  .dot-red {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background-color: #ff605c;
+    box-shadow: -5px 5px 5px rgba(0,0,0,0.280);
+  }
+
+  .dot-yellow {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background-color: #ffbd44;
+    box-shadow: -5px 5px 5px rgba(0,0,0,0.280);
+  }
+
+  .dot-green {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background-color: #00ca4e;
+    box-shadow: -5px 5px 5px rgba(0,0,0,0.280);
+  }
+
+  .chip-label {
+    text-align: center;
+    margin: 1.3rem;
+    color: rgb(218, 244, 237);
+    text-shadow: -10px 5px 10px rgba(0,0,0,0.573);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .chip-sub {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: rgba(218,244,237,0.75);
+    text-align: center;
+    padding: 0 0.5rem;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  .chip-icon { display: none; }
+  .chip-num  { display: none; }
+  .chip-accent { display: none; }
+
+  /* Chat area */
+  #chat-area {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  #messages::-webkit-scrollbar { width: 4px; }
+  #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .message {
+    display: flex;
+    gap: 0.8rem;
+    animation: msgIn 0.3s ease both;
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .message.user { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .avatar.ai {
+    background: linear-gradient(135deg, #2a4035 0%, #1e3028 100%);
+    border: 1px solid var(--border-light);
+    color: var(--accent);
+  }
+
+  .avatar.user {
+    background: rgba(181,201,154,0.15);
+    border: 1px solid rgba(181,201,154,0.3);
+    color: var(--accent);
+  }
+
+  .bubble {
+    max-width: 72%;
+    padding: 0.85rem 1.1rem;
+    border-radius: 1rem;
+    font-size: 0.96rem;
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
+
+  .message.user .bubble {
+    background: var(--user-bubble);
+    border: 1px solid rgba(181,201,154,0.15);
+    border-bottom-right-radius: 4px;
+    color: var(--text-main);
+  }
+
+  .message.ai .bubble {
+    background: var(--ai-bubble);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    color: var(--text-main);
+  }
+
+  .bubble strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .bubble ul { padding-left: 1.2rem; }
+  .bubble li { margin: 0.3rem 0; }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 0.85rem 1.1rem;
+  }
+
+  .typing-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    animation: typingBounce 1.2s infinite;
+  }
+
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30%            { transform: translateY(-5px); opacity: 1; }
+  }
+
+  /* Input bar */
+  .input-bar {
+    padding: 1rem 0 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-end;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    padding: 0.5rem 0.5rem 0.5rem 1.1rem;
+    transition: border-color 0.2s;
+  }
+
+  .input-row:focus-within {
+    border-color: var(--accent3);
+  }
+
+  #user-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Dosis', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text-main);
+    resize: none;
+    max-height: 120px;
+    min-height: 34px;
+    line-height: 1.5;
+    padding: 5px 0;
+    scrollbar-width: none;
+  }
+
+  #user-input::placeholder { color: var(--text-dim); }
+  #user-input::-webkit-scrollbar { display: none; }
+
+  #send-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 0.6rem;
+    background: var(--accent3);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  #send-btn:hover { background: var(--accent); }
+  #send-btn:active { transform: scale(0.93); }
+  #send-btn:disabled { background: var(--border); cursor: not-allowed; }
+
+  .input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .footer-tag {
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .footer-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent3);
+    opacity: 0.6;
+  }
+
+  /* Decorative leaf SVGs */
+  .deco-leaf {
+    position: fixed;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  #leaf-tl { top: -30px; left: -20px; transform: rotate(-15deg); }
+  #leaf-br { bottom: -40px; right: -30px; transform: rotate(160deg); }
+
+  /* ── SITE FOOTER BAR ── */
+  footer.site-footer {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: #000;
+  }
+
+  .footer-left {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .footer-left span { color: var(--accent3); }
+
+  /* ── INSTAGRAM TOOLTIP ── */
+  .ig-tooltip-container {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 17px;
+    border-radius: 10px;
+  }
+  .ig-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    border-radius: 15px;
+    box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2),
+      inset -5px -5px 15px rgba(255,255,255,0.1),
+      5px 5px 15px rgba(0,0,0,0.3), -5px -5px 15px rgba(255,255,255,0.1);
+    z-index: 999;
+    width: 200px;
+  }
+  .ig-profile {
+    background: #2a2b2f;
+    border-radius: 10px 15px;
+    padding: 10px;
+    border: 1px solid #52382f;
+  }
+  .ig-tooltip-container:hover .ig-tooltip {
+    bottom: 140%;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .ig-icon {
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    position: relative;
+  }
+  .ig-layer {
+    width: 55px;
+    height: 55px;
+    transition: transform 0.3s;
+    position: relative;
+  }
+  .ig-icon:hover .ig-layer { transform: rotate(-35deg) skew(20deg); }
+  .ig-layer span {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%; width: 100%;
+    border: 1px solid #e6683c;
+    border-radius: 15px;
+    transition: all 0.3s;
+  }
+  .ig-icon:hover .ig-layer span { box-shadow: -1px 1px 3px #e6683c; }
+  .ig-text-label {
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    opacity: 0;
+    font-weight: 600;
+    font-size: 12px;
+    color: #e6683c;
+    transform: translateX(-50%);
+    transition: bottom 0.3s ease, opacity 0.3s ease;
+    white-space: nowrap;
+    font-family: 'Dosis', sans-serif;
+    letter-spacing: 0.06em;
+  }
+  .ig-icon:hover .ig-text-label { bottom: -28px; opacity: 1; }
+  .ig-icon:hover .ig-layer span:nth-child(1) { opacity: 0.2; }
+  .ig-icon:hover .ig-layer span:nth-child(2) { opacity: 0.4; transform: translate(5px,-5px); }
+  .ig-icon:hover .ig-layer span:nth-child(3) { opacity: 0.6; transform: translate(10px,-10px); }
+  .ig-icon:hover .ig-layer span:nth-child(4) { opacity: 0.8; transform: translate(15px,-15px); }
+  .ig-icon:hover .ig-layer span:nth-child(5) { opacity: 1; transform: translate(20px,-20px); }
+  .ig-svg-wrap {
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+    border-radius: 15px;
+    width: 100%; height: 100%;
+  }
+  .ig-user { display: flex; gap: 10px; }
+  .ig-img {
+    width: 46px; height: 46px;
+    font-size: 14px; font-weight: 700;
+    border: 1px solid #e6683c;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+    color: #e6683c;
+    flex-shrink: 0;
+  }
+  .ig-name { font-size: 14px; font-weight: 700; color: #e6683c; }
+  .ig-details { display: flex; flex-direction: column; gap: 2px; color: #fff; }
+  .ig-username { font-size: 11px; color: #aaa; }
+  .ig-about { color: #ccc; padding-top: 6px; font-size: 11px; }
+
+  /* ── FACEBOOK TOOLTIP ── */
+  .fb-tooltip-container {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 17px;
+    border-radius: 10px;
+  }
+  .fb-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    border-radius: 15px;
+    box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2),
+      inset -5px -5px 15px rgba(255,255,255,0.1),
+      5px 5px 15px rgba(0,0,0,0.3), -5px -5px 15px rgba(255,255,255,0.1);
+    z-index: 999;
+    width: 200px;
+  }
+  .fb-profile {
+    background: #3b5998;
+    border-radius: 10px 15px;
+    padding: 10px;
+    border: 1px solid #29487d;
+  }
+  .fb-tooltip-container:hover .fb-tooltip {
+    bottom: 140%;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .fb-icon {
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    position: relative;
+  }
+  .fb-layer {
+    width: 55px; height: 55px;
+    border: 3px solid #1877f2;
+    border-radius: 50%;
+    transition: transform 0.3s, border 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px rgba(24,119,242,0.7), 0 0 20px rgba(24,119,242,0.5);
+    position: relative;
+  }
+  .fb-icon:hover .fb-layer {
+    transform: rotate(-35deg) skew(20deg);
+    box-shadow: 0 0 30px rgba(24,119,242,1), 0 0 40px rgba(24,119,242,0.7);
+  }
+  .fb-layer span {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%; width: 100%;
+    border: 1px solid #1877f2;
+    border-radius: 50%;
+    transition: all 0.3s;
+  }
+  .fb-icon:hover .fb-layer span { box-shadow: -1px 1px 3px #1877f2; }
+  .fb-text-label {
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    opacity: 0;
+    font-weight: 600;
+    font-size: 12px;
+    color: #1877f2;
+    transform: translateX(-50%);
+    transition: bottom 0.3s ease, opacity 0.3s ease;
+    white-space: nowrap;
+    font-family: 'Dosis', sans-serif;
+    letter-spacing: 0.06em;
+  }
+  .fb-icon:hover .fb-text-label { bottom: -28px; opacity: 1; }
+  .fb-icon:hover .fb-layer span:nth-child(1) { opacity: 0.2; }
+  .fb-icon:hover .fb-layer span:nth-child(2) { opacity: 0.4; transform: translate(5px,-5px); }
+  .fb-icon:hover .fb-layer span:nth-child(3) { opacity: 0.6; transform: translate(10px,-10px); }
+  .fb-icon:hover .fb-layer span:nth-child(4) { opacity: 0.8; transform: translate(15px,-15px); }
+  .fb-icon:hover .fb-layer span:nth-child(5) { opacity: 1; transform: translate(20px,-20px); }
+  .fb-svg-wrap {
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(45deg,#1877f2 0%,#3b5998 25%,#1877f2 50%,#3b5998 75%,#1877f2 100%);
+    border-radius: 50%;
+    width: 100%; height: 100%;
+  }
+  .fb-user { display: flex; gap: 10px; }
+  .fb-img {
+    width: 46px; height: 46px;
+    font-size: 13px; font-weight: 700;
+    border: 1px solid #1877f2;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+    color: #1877f2;
+    flex-shrink: 0;
+  }
+  .fb-name { font-size: 14px; font-weight: 700; color: #1877f2; }
+  .fb-details { display: flex; flex-direction: column; gap: 2px; color: #fff; }
+  .fb-username { font-size: 11px; color: #aaa; }
+  .fb-about { color: #ccc; padding-top: 6px; font-size: 11px; }
+
+  /* footer social group */
+  .footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- Decorative leaves -->
+<svg id="leaf-tl" class="deco-leaf" width="220" height="280" viewBox="0 0 220 280">
+  <path d="M110 270 C50 200 10 120 30 60 C50 10 110 0 110 0 C110 0 170 10 190 60 C210 120 170 200 110 270Z" fill="#7fb08a"/>
+  <path d="M110 270 C110 200 110 80 110 0" stroke="#4a7c5a" stroke-width="2" fill="none"/>
+  <path d="M110 200 C90 180 60 160 50 140" stroke="#4a7c5a" stroke-width="1.5" fill="none"/>
+  <path d="M110 150 C135 130 165 120 175 100" stroke="#4a7c5a" stroke-width="1.5" fill="none"/>
+</svg>
+
+<svg id="leaf-br" class="deco-leaf" width="260" height="320" viewBox="0 0 260 320">
+  <path d="M130 310 C70 230 20 140 40 70 C60 10 130 0 130 0 C130 0 200 10 220 70 C240 140 190 230 130 310Z" fill="#6a9e7a"/>
+  <path d="M130 310 C130 230 130 80 130 0" stroke="#4a7c5a" stroke-width="2" fill="none"/>
+</svg>
+
+<header>
+  <div class="logo" onclick="showHome()" style="cursor: pointer;" title="Return to Home">
+    <div class="logo-icon">
+      <svg width="18" height="22" viewBox="0 0 18 22" fill="none">
+        <path d="M9 21 C5 16 2 11 3 6 C4 2 9 1 9 1 C9 1 14 2 15 6 C16 11 13 16 9 21Z" fill="#7fb08a"/>
+        <path d="M9 21 L9 1" stroke="#b5c99a" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M9 15 C7 13 4 11 3.5 9" stroke="#b5c99a" stroke-width="1" stroke-linecap="round"/>
+        <path d="M9 10 C11 8 14 7 14.5 5" stroke="#b5c99a" stroke-width="1" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="logo-text">Ver<span>dure</span></div>
+  </div>
+
+  <nav class="nav-links">
+    <button class="nav-link" onclick="showHome()">Home</button>
+    <button class="nav-link">Fabrics</button>
+    <button class="nav-link">Brands</button>
+    <button class="nav-link">Certifications</button>
+    <button class="nav-link">Guides</button>
+    <button class="nav-cta" onclick="document.getElementById('welcome').style.display='none'; document.getElementById('chat-area').style.cssText='display:flex;flex-direction:column;'"><span class="nav-dot"></span>Ask AI</button>
+
+    <div class="tooltip-container">
+      <span class="text">
+        <svg viewBox="0 0 16 16" height="22" width="22" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+        </svg>
+      </span>
+      <span class="tooltip1"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/></svg></span>
+      <span class="tooltip2"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/></svg></span>
+      <span class="tooltip3"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg></span>
+      <span class="tooltip4"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/></svg></span>
+      <span class="tooltip5"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M8 0a8 8 0 0 0-2.915 15.452c-.07-.633-.134-1.606.027-2.297.146-.625.938-3.977.938-3.977s-.239-.479-.239-1.187c0-1.113.645-1.943 1.448-1.943.682 0 1.012.512 1.012 1.127 0 .686-.437 1.712-.663 2.663-.188.796.4 1.446 1.185 1.446 1.422 0 2.515-1.5 2.515-3.664 0-1.915-1.377-3.254-3.342-3.254-2.276 0-3.612 1.707-3.612 3.471 0 .688.265 1.425.595 1.826a.24.24 0 0 1 .056.23c-.061.252-.196.796-.222.907-.035.146-.116.177-.268.107-1-.465-1.624-1.926-1.624-3.1 0-2.523 1.834-4.84 5.286-4.84 2.775 0 4.932 1.977 4.932 4.62 0 2.757-1.739 4.976-4.151 4.976-.811 0-1.573-.421-1.834-.919l-.498 1.902c-.181.695-.669 1.566-.995 2.097A8 8 0 1 0 8 0"/></svg></span>
+      <span class="tooltip6"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.584 0 0 3.584 0 8s3.584 8 8 8c4.408 0 8-3.584 8-8s-3.592-8-8-8m5.284 3.688a6.8 6.8 0 0 1 1.545 4.251c-.226-.043-2.482-.503-4.755-.217-.052-.112-.096-.234-.148-.355-.139-.33-.295-.668-.451-.99 2.516-1.023 3.662-2.498 3.81-2.69zM8 1.18c1.735 0 3.323.65 4.53 1.718-.122.174-1.155 1.553-3.584 2.464-1.12-2.056-2.36-3.74-2.551-4A7 7 0 0 1 8 1.18m-2.907.642A43 43 0 0 1 7.627 5.77c-3.193.85-6.013.833-6.317.833a6.87 6.87 0 0 1 3.783-4.78zM1.163 8.01V7.8c.295.01 3.61.053 7.02-.971.199.381.381.772.555 1.162l-.27.078c-3.522 1.137-5.396 4.243-5.553 4.504a6.82 6.82 0 0 1-1.752-4.564zM8 14.837a6.8 6.8 0 0 1-4.19-1.44c.12-.252 1.509-2.924 5.361-4.269.018-.009.026-.009.044-.017a28.3 28.3 0 0 1 1.457 5.18A6.7 6.7 0 0 1 8 14.837m3.81-1.171c-.07-.417-.435-2.412-1.328-4.868 2.143-.338 4.017.217 4.251.295a6.77 6.77 0 0 1-2.924 4.573z" fill-rule="evenodd"/></svg></span>
+      <span class="tooltip7"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg></span>
+      <span class="tooltip8"><svg viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114-.01-.238-.029-.353.401-.181.688-.592.688-1.069 0-.65-.525-1.165-1.165-1.165"/></svg></span>
+      <span class="tooltip9"></span>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- Welcome Screen -->
+  <div id="welcome">
+    <div class="hero-eyebrow">
+      <span class="nav-dot" style="margin:0;"></span>
+      AI-Powered · Ethical · Sustainable
+    </div>
+
+    <div class="hero-title-wrap">
+      <div class="welcome-h">
+        Dress with a
+        <span class="hl"> Purpose</span>
+        <span class="line2">Conscious Style AI</span>
+      </div>
+      <div class="hero-divider"></div>
+    </div>
+
+    <p class="welcome-p">Discover ethical brands, eco-friendly materials, and conscious fashion choices — personalized just for you.</p>
+
+    <div class="chips-grid">
+      <div class="chip" onclick="sendChip('What are the most sustainable fabrics I should look for when shopping?')">
+        <div class="chip-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="chip-label">Sustainable Fabrics</div>
+        <div class="chip-sub">Learn what eco-friendly materials to look for when shopping.</div>
+      </div>
+      <div class="chip" onclick="sendChip('Recommend some ethical and sustainable clothing brands for everyday wear.')">
+        <div class="chip-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="chip-label">Ethical Brands</div>
+        <div class="chip-sub">Discover conscious labels doing fashion the right way.</div>
+      </div>
+      <div class="chip" onclick="sendChip('How can I build a capsule wardrobe sustainably on a budget?')">
+        <div class="chip-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="chip-label">Capsule Wardrobe</div>
+        <div class="chip-sub">Build a mindful, minimal wardrobe on any budget.</div>
+      </div>
+      <div class="chip" onclick="sendChip('What certifications should I look for to ensure clothing is ethically made?')">
+        <div class="chip-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="chip-label">Certifications</div>
+        <div class="chip-sub">Fair Trade, GOTS, B Corp — know what they mean.</div>
+      </div>
+      <div class="chip" onclick="sendChip('What is greenwashing in fashion and how do I avoid it?')">
+        <div class="chip-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="chip-label">Greenwashing</div>
+        <div class="chip-sub">Spot fake eco claims and shop with confidence.</div>
+      </div>
+      <div class="chip" onclick="sendChip('How do I care for my clothes to make them last longer and reduce my fashion footprint?')">
+        <div class="chip-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <div class="chip-label">Care & Longevity</div>
+        <div class="chip-sub">Extend garment life and shrink your fashion footprint.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div id="chat-area">
+    <div id="messages"></div>
+
+    <div class="input-bar">
+      <div class="input-row">
+        <textarea id="user-input" rows="1" placeholder="Ask about sustainable brands, fabrics, ethical shopping…"></textarea>
+        <button id="send-btn" onclick="sendMessage()" title="Send">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+            <path d="M2 15L15 8.5L2 2V7L11 8.5L2 10V15Z" fill="white"/>
+          </svg>
+        </button>
+      </div>
+      <div class="input-footer">
+        <span class="footer-tag"><span class="footer-dot"></span>Ethical fashion only</span>
+        <span class="footer-tag"><span class="footer-dot"></span>Powered by Claude</span>
+        <span class="footer-tag"><span class="footer-dot"></span>Eco-conscious advice</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-left">© 2026 <span>Verdure</span> — Ethical Fashion AI</div>
+
+  <div class="footer-socials">
+
+    <!-- Instagram -->
+    <div class="ig-tooltip-container">
+      <div class="ig-tooltip">
+        <div class="ig-profile">
+          <div class="ig-user">
+            <div class="ig-img">V</div>
+            <div class="ig-details">
+              <div class="ig-name">Verdure</div>
+              <div class="ig-username">@verdure.style</div>
+            </div>
+          </div>
+          <div class="ig-about">🌿 800+ Followers</div>
+        </div>
+      </div>
+      <a class="ig-icon" href="#">
+        <div class="ig-layer">
+          <span></span><span></span><span></span><span></span>
+          <span class="ig-svg-wrap">
+            <svg fill="white" viewBox="0 0 448 512" height="1.5em" xmlns="http://www.w3.org/2000/svg">
+              <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+            </svg>
+          </span>
+        </div>
+        <div class="ig-text-label">Instagram</div>
+      </a>
+    </div>
+
+    <!-- Facebook -->
+    <div class="fb-tooltip-container">
+      <div class="fb-tooltip">
+        <div class="fb-profile">
+          <div class="fb-user">
+            <div class="fb-img">Fb</div>
+            <div class="fb-details">
+              <div class="fb-name">Verdure</div>
+              <div class="fb-username">@verdure.fashion</div>
+            </div>
+          </div>
+          <div class="fb-about">💙 500+ Friends</div>
+        </div>
+      </div>
+      <a class="fb-icon" href="#">
+        <div class="fb-layer">
+          <span></span><span></span><span></span><span></span>
+          <span class="fb-svg-wrap">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <linearGradient gradientUnits="userSpaceOnUse" gradientTransform="matrix(40 0 0 -39.7778 11115.001 16212.334)" y2="407.5726" y1="406.6018" x2="-277.375" x1="-277.375" id="fba">
+                <stop stop-color="#0062e0" offset="0"></stop>
+                <stop stop-color="#19afff" offset="1"></stop>
+              </linearGradient>
+              <path d="M16.7 39.8C7.2 38.1 0 29.9 0 20 0 9 9 0 20 0s20 9 20 20c0 9.9-7.2 18.1-16.7 19.8l-1.1-.9h-4.4l-1.1.9z" fill="url(#fba)"></path>
+              <path d="m27.8 25.6.9-5.6h-5.3v-3.9c0-1.6.6-2.8 3-2.8H29V8.2c-1.4-.2-3-.4-4.4-.4-4.6 0-7.8 2.8-7.8 7.8V20h-5v5.6h5v14.1c1.1.2 2.2.3 3.3.3 1.1 0 2.2-.1 3.3-.3V25.6h4.4z" fill="#fff"></path>
+            </svg>
+          </span>
+        </div>
+        <div class="fb-text-label">Facebook</div>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="footer-left" style="text-align:right;">Conscious fashion,<br><span>conscious planet</span></div>
+</footer>
+
+<script>
+  const SYSTEM_PROMPT = `You are Verdure, an AI assistant exclusively specialized in ethical and sustainable fashion. Your expertise covers:
+- Sustainable and eco-friendly fabrics (organic cotton, linen, Tencel, recycled materials, etc.)
+- Ethical fashion brands and certifications (Fair Trade, GOTS, B Corp, Bluesign, etc.)
+- Capsule wardrobes and mindful shopping
+- Greenwashing awareness and how to identify truly ethical brands
+- Second-hand, vintage, and upcycling fashion
+- Garment care tips that extend clothing life and reduce environmental impact
+- The environmental and social impact of fast fashion
+- Slow fashion movement and conscious consumerism
+- Specific sustainable fabric properties, sourcing, and care
+- Price-conscious sustainable shopping tips
+
+STRICT DOMAIN RULE: You ONLY answer questions related to fashion, clothing, sustainability, ethical sourcing, textiles, and related topics. If a user asks about anything outside this domain (technology, cooking, sports, finance, health, politics, general knowledge, etc.), you must politely but firmly decline and redirect them back to sustainable fashion topics.
+
+Refusal template for off-topic: "I'm Verdure, and my expertise is entirely in ethical and sustainable fashion. I'm not able to help with [topic], but I'd love to assist you with sustainable style choices, ethical brand recommendations, or eco-friendly fabric guides — just ask!"
+
+Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold headers for key terms when listing multiple items. Be specific with brand names, certifications, and material science when relevant. Advocate for mindful consumption without judgment.`;
+
+  let messages = [];
+  let isLoading = false;
+
+  const welcomeEl   = document.getElementById('welcome');
+  const chatAreaEl  = document.getElementById('chat-area');
+  const messagesEl  = document.getElementById('messages');
+  const inputEl     = document.getElementById('user-input');
+  const sendBtn     = document.getElementById('send-btn');
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  inputEl.addEventListener('input', () => {
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+  });
+
+  function sendChip(text) {
+    showChat();
+    inputEl.value = text;
+    sendMessage();
+  }
+
+  function showChat() {
+    welcomeEl.style.display = 'none';
+    chatAreaEl.style.display = 'flex';
+    chatAreaEl.style.flexDirection = 'column';
+  }
+
+  function showHome() {
+    chatAreaEl.style.display = 'none';
+    welcomeEl.style.display = 'flex';
+  }
+
+  function addMessage(role, text) {
+    const el = document.createElement('div');
+    el.className = `message ${role}`;
+
+    const initials = role === 'ai' ? '🌿' : 'You';
+    const avatarClass = role === 'ai' ? 'ai' : 'user';
+
+    el.innerHTML = `
+      <div class="avatar ${avatarClass}" style="${role==='ai'?'font-size:1rem;':'font-size:0.62rem;font-weight:700;letter-spacing:0.04em;'}">${initials}</div>
+      <div class="bubble">${formatText(text)}</div>
+    `;
+    messagesEl.appendChild(el);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return el;
+  }
+
+  function formatText(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/gs, m => `<ul>${m}</ul>`)
+      .replace(/\n{2,}/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function addTyping() {
+    const el = document.createElement('div');
+    el.className = 'message ai';
+    el.id = 'typing';
+    el.innerHTML = `
+      <div class="avatar ai" style="font-size:1rem;">🌿</div>
+      <div class="bubble ai">
+        <div class="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    `;
+    messagesEl.appendChild(el);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return el;
+  }
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text || isLoading) return;
+
+    showChat();
+    isLoading = true;
+    sendBtn.disabled = true;
+    inputEl.value = '';
+    inputEl.style.height = 'auto';
+
+    messages.push({ role: 'user', content: text });
+    addMessage('user', text);
+
+    const typingEl = addTyping();
+
+    try {
+      // ⚠️ IMPORTANT: Get your FREE API key from https://aistudio.google.com/
+      const API_KEY = 'AIzaSyA7_iqxweqwjbtUwGIdlcfPqfku1AkcTw0';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${API_KEY}`;
+
+      // Convert our chat history format to Gemini's expected format
+      const geminiMessages = messages.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: SYSTEM_PROMPT }]
+          },
+          contents: geminiMessages,
+          generationConfig: {
+            maxOutputTokens: 1000,
+          }
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || 'API Request Failed');
+      }
+
+      const data = await res.json();
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not respond right now.';
+
+      typingEl.remove();
+      addMessage('ai', reply);
+      messages.push({ role: 'assistant', content: reply });
+
+    } catch (err) {
+      console.error("API Error: ", err);
+      typingEl.remove();
+      addMessage('ai', 'Error: ' + err.message);
+      messages.pop();
+    }
+
+    isLoading = false;
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
+</script>
+</body>
+</html>
