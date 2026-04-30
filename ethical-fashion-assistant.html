@@ -452,18 +452,17 @@
 
     /* ── SIDEBAR DRAWER ── */
     #sidebar-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-      z-index: 9000; opacity: 0; visibility: hidden; transition: all 0.3s;
+      display: none; /* Removed blocking overlay */
     }
     #sidebar {
       position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
-      background: #ffffff; border-right: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.95); border-right: 1px solid var(--border);
       z-index: 9001; transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
-      box-shadow: 10px 0 30px rgba(0,0,0,0.02);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+      backdrop-filter: blur(10px);
     }
     #sidebar.open { left: 0; }
-    #sidebar-overlay.open { opacity: 1; visibility: visible; }
     .menu-btn {
       background: transparent; border: none; color: var(--text-main); font-size: 1.5rem;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
@@ -2137,7 +2136,6 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('open');
-      document.getElementById('sidebar-overlay').classList.toggle('open');
     }
     window.toggleSidebar = toggleSidebar;
 
