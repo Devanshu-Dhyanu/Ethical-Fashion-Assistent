@@ -1757,7 +1757,23 @@
   </footer>
 
   <script src="config.js"></script>
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDcfYSpH7Bc5u3qIdnMMr5tOBsZWHpWpHk",
+      authDomain: "biostyle-3c3d2.firebaseapp.com",
+      projectId: "biostyle-3c3d2",
+      storageBucket: "biostyle-3c3d2.firebasestorage.app",
+      messagingSenderId: "724627596407",
+      appId: "1:724627596407:web:ace623806f19eb214b5272"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
     const SYSTEM_PROMPT = `You are BioStyle, an AI assistant exclusively specialized in ethical and sustainable fashion. Your expertise covers:
 - Sustainable and eco-friendly fabrics (organic cotton, linen, Tencel, recycled materials, etc.)
 - Ethical fashion brands and certifications (Fair Trade, GOTS, B Corp, Bluesign, etc.)
@@ -1780,7 +1796,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     let currentSessionId = null;
     let messages = [];
     let isLoading = false;
-    let isLoggedIn = localStorage.getItem('biostyle_logged_in') === 'true';
+    let isLoggedIn = false;
 
     const welcomeEl = document.getElementById('welcome');
     const chatAreaEl = document.getElementById('chat-area');
@@ -1791,15 +1807,27 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     const authModal = document.getElementById('auth-modal');
     const userProfile = document.getElementById('user-profile');
 
-    // Load local storage messages on init
-    updateSidebarHistory();
-    if (sessions.length > 0) {
-      loadSession(sessions[0].id);
-    }
-
-    if (isLoggedIn) {
-      userProfile.style.display = 'flex';
-    }
+    // Real Firebase Auth Listener
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        isLoggedIn = true;
+        userProfile.style.display = 'flex';
+        authModal.classList.remove('open');
+        // Update profile
+        const avatar = userProfile.querySelector('.user-avatar');
+        if (user.photoURL) {
+          avatar.style.background = `url(${user.photoURL})`;
+          avatar.style.backgroundSize = 'cover';
+          avatar.textContent = '';
+        } else {
+          avatar.textContent = user.displayName[0];
+        }
+        userProfile.querySelector('span').textContent = user.displayName.split(' ')[0];
+      } else {
+        isLoggedIn = false;
+        userProfile.style.display = 'none';
+      }
+    });
 
     function checkAuth() {
       if (!isLoggedIn) {
@@ -1808,25 +1836,24 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       }
       return true;
     }
+    window.checkAuth = checkAuth;
 
-    function loginWithGoogle() {
+    async function loginWithGoogle() {
       const btn = document.querySelector('.google-btn');
       btn.innerHTML = 'Connecting...';
       btn.style.opacity = '0.7';
       
-      setTimeout(() => {
-        isLoggedIn = true;
-        localStorage.setItem('biostyle_logged_in', 'true');
-        authModal.classList.remove('open');
-        userProfile.style.display = 'flex';
-        // Alert for premium feel
-        const toast = document.createElement('div');
-        toast.style = "position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:var(--accent); color:#000; padding:12px 24px; border-radius:30px; font-weight:700; z-index:10000; font-family:'Dosis';";
-        toast.textContent = "Welcome back, Devanshu!";
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-      }, 1500);
+      try {
+        await signInWithPopup(auth, provider);
+        // authModal will be closed by onAuthStateChanged listener
+      } catch (error) {
+        console.error("Auth Error:", error);
+        btn.innerHTML = 'Sign in with Google';
+        btn.style.opacity = '1';
+        alert("Failed to sign in: " + error.message);
+      }
     }
+    window.loginWithGoogle = loginWithGoogle;
 
     function updateSidebarHistory() {
       const listEl = document.getElementById('history-list');
@@ -1859,6 +1886,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
         if (window.innerWidth < 768) toggleSidebar();
       }
     }
+    window.clearAllChats = clearAllChats;
 
     function startNewSession() {
       currentSessionId = null;
@@ -1868,6 +1896,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       showChat(); // Now correctly goes to an empty chat instead of Home
       if(window.innerWidth < 768) toggleSidebar();
     }
+    window.startNewSession = startNewSession;
 
     function loadSession(id) {
       currentSessionId = id;
@@ -1896,6 +1925,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       recognition.onend = () => micBtn.style.color = "var(--accent)";
       recognition.start();
     }
+    window.startSpeech = startSpeech;
 
     inputEl.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -1912,6 +1942,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       inputEl.value = text;
       sendMessage();
     }
+    window.sendChip = sendChip;
 
     function showChat() {
       welcomeEl.style.display = 'none';
@@ -1919,11 +1950,19 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       chatAreaEl.style.flexDirection = 'column';
       setTimeout(() => inputEl.focus(), 50);
     }
+    window.showChat = showChat;
 
     function showHome() {
       chatAreaEl.style.display = 'none';
       welcomeEl.style.display = 'flex';
     }
+    window.showHome = showHome;
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebar-overlay').classList.toggle('open');
+    }
+    window.toggleSidebar = toggleSidebar;
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('open');
@@ -2062,6 +2101,7 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       sendBtn.disabled = false;
       inputEl.focus();
     }
+    window.sendMessage = sendMessage;
   </script>
 </body>
 
