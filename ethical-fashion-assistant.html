@@ -1503,6 +1503,38 @@
       gap: 1.8rem;
     }
 
+    /* Premium Modal */
+    #premium-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+      z-index: 10000; display: none; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    #premium-modal.open { display: flex; }
+    .premium-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f9fbf9 100%);
+      padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 400px;
+      text-align: center; border: 2px solid #ecd06f; /* Golden border */
+      box-shadow: 0 15px 40px rgba(236, 208, 111, 0.3);
+      position: relative; overflow: hidden;
+    }
+    .premium-card::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(236,208,111,0.1) 0%, transparent 70%);
+      animation: rotate-premium 10s linear infinite;
+    }
+    @keyframes rotate-premium { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .premium-icon { font-size: 3rem; margin-bottom: 1rem; position: relative; z-index: 2; }
+    .premium-h { font-size: 1.5rem; font-weight: 800; color: #b8860b; margin-bottom: 1rem; position: relative; z-index: 2; }
+    .premium-p { color: var(--text-dim); line-height: 1.5; margin-bottom: 2rem; position: relative; z-index: 2; }
+    .premium-btn {
+      background: linear-gradient(135deg, #b8860b 0%, #ecd06f 100%);
+      color: #fff; border: none; padding: 12px 24px; border-radius: 8px;
+      font-weight: 700; width: 100%; cursor: pointer; transition: transform 0.2s;
+      position: relative; z-index: 2;
+    }
+    .premium-btn:hover { transform: scale(1.02); }
+    .not-now { display: block; margin-top: 1rem; color: var(--text-dim); text-decoration: none; font-size: 0.85rem; cursor: pointer; position: relative; z-index: 2; }
+
     /* ── LOGIN MODAL ── */
     #auth-modal {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -1563,6 +1595,17 @@
   <!-- Splash Screen -->
   <div id="splash-screen">
     <div class="splash-logo">Bio<span>Style</span></div>
+  </div>
+
+  <!-- Premium Modal -->
+  <div id="premium-modal">
+    <div class="premium-card">
+      <div class="premium-icon">👑</div>
+      <div class="premium-h">Go BioStyle Pro!</div>
+      <p class="premium-p">You've reached your free limit of 3 image analyses. Upgrade to Pro for unlimited vision features and exclusive ethical guides.</p>
+      <button class="premium-btn" onclick="alert('Proceeding to Checkout (Demo Interface)...')">Upgrade Now — $9/mo</button>
+      <a class="not-now" onclick="closePremiumModal()">Maybe Later</a>
+    </div>
   </div>
 
   <!-- Auth Modal -->
@@ -1968,10 +2011,20 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     const imgInput = document.getElementById('img-input');
     const imgPreviewWrap = document.getElementById('img-preview-wrap');
     const imgPreviewSrc = document.getElementById('img-preview-src');
+    const premiumModal = document.getElementById('premium-modal');
 
     let currentImageData = null; // Stores {mime_type, data}
+    const UPLOAD_LIMIT = 3;
 
     function handleImageUpload(e) {
+      if (!isLoggedIn) { alert("Please sign in to upload images."); return; }
+      
+      let uploadCount = parseInt(localStorage.getItem(getStorageKey('total_uploads')) || "0");
+      if (uploadCount >= UPLOAD_LIMIT) {
+        premiumModal.classList.add('open');
+        return;
+      }
+
       const file = e.target.files[0];
       if (!file) return;
 
@@ -1991,6 +2044,11 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       reader.readAsDataURL(file);
     }
     window.handleImageUpload = handleImageUpload;
+
+    function closePremiumModal() {
+      premiumModal.classList.remove('open');
+    }
+    window.closePremiumModal = closePremiumModal;
 
     function removeImage() {
       currentImageData = null;
@@ -2335,6 +2393,10 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
            const lastMsg = geminiMessages[geminiMessages.length - 1];
            lastMsg.parts.push(currentImageData);
            removeImage(); // Clear preview after sending
+           
+           // Increment usage count
+           let count = parseInt(localStorage.getItem(getStorageKey('total_uploads')) || "0");
+           localStorage.setItem(getStorageKey('total_uploads'), count + 1);
         }
 
         const res = await fetch(url, {
