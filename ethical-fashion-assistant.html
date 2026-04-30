@@ -488,10 +488,21 @@
       display: flex; flex-direction: column; gap: 0.5rem; max-height: 40vh; overflow-y: auto; scrollbar-width: none;
     }
     .history-item {
+      display: flex; justify-content: space-between; align-items: center;
       color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 8px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+      padding: 8px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+      position: relative; overflow: visible;
     }
     .history-item:hover, .history-item.active { background: rgba(0,0,0,0.04); color: var(--accent); }
+    .history-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+    .history-actions { opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; }
+    .history-item:hover .history-actions { opacity: 1; }
+    .del-session-btn {
+      background: none; border: none; color: var(--text-muted); cursor: pointer; 
+      padding: 4px; display: flex; align-items: center; justify-content: center;
+      border-radius: 4px; transition: background 0.2s;
+    }
+    .del-session-btn:hover { background: rgba(255, 96, 92, 0.1); color: #ff605c; }
     .sidebar-divider { height: 1px; background: var(--border); margin: 0.5rem 0; width: 100%; }
 
     /* Main layout */
@@ -2000,12 +2011,37 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
         sessions.forEach(s => {
           const div = document.createElement('div');
           div.className = `history-item ${s.id === currentSessionId ? 'active' : ''}`;
-          div.textContent = s.title;
-          div.onclick = () => loadSession(s.id);
+          
+          div.innerHTML = `
+            <span class="history-text" onclick="loadSession('${s.id}')">${s.title}</span>
+            <div class="history-actions">
+              <button class="del-session-btn" onclick="deleteSession('${s.id}', event)" title="Delete Chat">⋮</button>
+            </div>
+          `;
           listEl.appendChild(div);
         });
       }
     }
+
+    function deleteSession(id, event) {
+      if (event) event.stopPropagation();
+      if (confirm("Delete this conversation?")) {
+        // Remove individual messages
+        localStorage.removeItem(getStorageKey('messages', id));
+        // Update sessions list
+        sessions = sessions.filter(s => s.id !== id);
+        localStorage.setItem(getStorageKey('sessions'), JSON.stringify(sessions));
+        
+        if (currentSessionId === id) {
+          currentSessionId = null;
+          messages = [];
+          messagesEl.innerHTML = '';
+          showHome();
+        }
+        updateSidebarHistory();
+      }
+    }
+    window.deleteSession = deleteSession;
 
     function generateId() {
       return Date.now().toString(36) + Math.random().toString(36).substring(2);
