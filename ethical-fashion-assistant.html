@@ -441,6 +441,45 @@
       z-index: -1;
     }
 
+    /* ── SPLASH SCREEN ── */
+    #splash-screen {
+      position: fixed; inset: 0; background: var(--bg-deep); z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    .splash-logo {
+      font-size: 3rem; font-weight: 800; letter-spacing: 0.15em;
+      color: var(--text-main); text-transform: uppercase; animation: pulse 1.5s infinite;
+    }
+    .splash-logo span { color: var(--accent); }
+
+    /* ── SIDEBAR DRAWER ── */
+    #sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      z-index: 9000; opacity: 0; visibility: hidden; transition: all 0.3s;
+    }
+    #sidebar {
+      position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
+      background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); border-right: 1px solid var(--border);
+      z-index: 9001; transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
+    }
+    #sidebar.open { left: 0; }
+    #sidebar-overlay.open { opacity: 1; visibility: visible; }
+    .menu-btn {
+      background: transparent; border: none; color: var(--text-main); font-size: 1.5rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: color 0.2s;
+    }
+    .menu-btn:hover { color: var(--accent); }
+    .sidebar-links { display: flex; flex-direction: column; gap: 1.2rem; }
+    .sidebar-link {
+      color: var(--text-muted); text-decoration: none; font-size: 1.1rem;
+      font-weight: 600; transition: color 0.2s; font-family: 'Dosis', sans-serif;
+    }
+    .sidebar-link:hover { color: var(--accent); }
+    .sidebar-title { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+
     /* Main layout */
     main {
       position: relative;
@@ -1369,6 +1408,27 @@
 
 <body>
 
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <div class="splash-logo">Ver<span>dure</span></div>
+  </div>
+
+  <!-- Sidebar -->
+  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <aside id="sidebar">
+    <div class="logo">
+      <div class="logo-icon" style="font-size:1.2rem;">🌿</div>
+      <div class="logo-text">Ver<span>dure</span></div>
+    </div>
+    <div class="sidebar-links">
+      <div class="sidebar-title">Menu</div>
+      <a href="#" class="sidebar-link" onclick="toggleSidebar(); showHome();">Home Dashboard</a>
+      <a href="#" class="sidebar-link" onclick="toggleSidebar(); alert('Settings coming soon in v2!');">Preferences</a>
+      <a href="#" class="sidebar-link" onclick="toggleSidebar(); sendChip('What is Verdure\'s mission?');">Our Mission</a>
+      <a href="#" class="sidebar-link" onclick="toggleSidebar(); alert('Safe logout successful.');">Log Out</a>
+    </div>
+  </aside>
+
   <!-- Decorative leaves -->
   <svg id="leaf-tl" class="deco-leaf" width="220" height="280" viewBox="0 0 220 280">
     <path d="M110 270 C50 200 10 120 30 60 C50 10 110 0 110 0 C110 0 170 10 190 60 C210 120 170 200 110 270Z"
@@ -1385,7 +1445,9 @@
   </svg>
 
   <header>
-    <div class="logo" onclick="showHome()" style="cursor: pointer;" title="Return to Home">
+    <div style="display:flex; align-items:center; gap: 1.2rem;">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="logo" onclick="showHome()" style="cursor: pointer;" title="Return to Home">
       <div class="logo-icon">
         <svg width="18" height="22" viewBox="0 0 18 22" fill="none">
           <path d="M9 21 C5 16 2 11 3 6 C4 2 9 1 9 1 C9 1 14 2 15 6 C16 11 13 16 9 21Z" fill="#7fb08a" />
@@ -1395,6 +1457,7 @@
         </svg>
       </div>
       <div class="logo-text">Ver<span>dure</span></div>
+      </div>
     </div>
 
     <nav class="nav-links">
@@ -1717,6 +1780,19 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
       chatAreaEl.style.display = 'none';
       welcomeEl.style.display = 'flex';
     }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebar-overlay').classList.toggle('open');
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        splash.style.visibility = 'hidden';
+      }, 1500);
+    });
 
     function addMessage(role, text) {
       const el = document.createElement('div');
