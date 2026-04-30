@@ -873,11 +873,11 @@
 
   <nav class="nav-links">
     <button class="nav-link" onclick="showHome()">Home</button>
-    <button class="nav-link">Fabrics</button>
-    <button class="nav-link">Brands</button>
-    <button class="nav-link">Certifications</button>
-    <button class="nav-link">Guides</button>
-    <button class="nav-cta" onclick="document.getElementById('welcome').style.display='none'; document.getElementById('chat-area').style.cssText='display:flex;flex-direction:column;'"><span class="nav-dot"></span>Ask AI</button>
+    <button class="nav-link" onclick="sendChip('Tell me about sustainable and eco-friendly fabrics I should look for.')">Fabrics</button>
+    <button class="nav-link" onclick="sendChip('Recommend some authentic ethical and sustainable clothing brands.')">Brands</button>
+    <button class="nav-link" onclick="sendChip('What certifications should I look for to ensure clothing is ethically made?')">Certifications</button>
+    <button class="nav-link" onclick="sendChip('Give me a beginner guide on how to build a sustainable and mindful wardrobe.')">Guides</button>
+    <button class="nav-cta" onclick="showChat()"><span class="nav-dot"></span>Ask AI</button>
 
     <div class="tooltip-container">
       <span class="text">
