@@ -476,6 +476,14 @@
     }
     .sidebar-link:hover { color: var(--accent); }
     .sidebar-title { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    
+    .sidebar-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; color: var(--text-dim);
+      font-size: 1.4rem; cursor: pointer; transition: color 0.2s;
+      line-height: 1; padding: 4px; border-radius: 50%;
+    }
+    .sidebar-close:hover { color: var(--accent); background: rgba(0,0,0,0.03); }
 
     .new-chat-btn {
       background: var(--accent); color: #fff; border: none; padding: 10px 15px; width: 100%;
@@ -1532,6 +1540,7 @@
   <!-- Sidebar -->
   <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
   <aside id="sidebar">
+    <button class="sidebar-close" onclick="toggleSidebar()" title="Close Menu">×</button>
     <div class="logo">
       <div class="logo-icon" style="font-size:1.2rem;">🌿</div>
       <div class="logo-text">Bio<span>Style</span></div>
