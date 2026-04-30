@@ -1461,16 +1461,6 @@
       0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } 
     }
 
-    /* ── IMPACT WIDGET ── */
-    #impact-card {
-      background: rgba(181, 201, 154, 0.08); border: 1px dashed rgba(181, 201, 154, 0.3);
-      border-radius: 12px; padding: 1rem 1.5rem; margin: 1.5rem 0; max-width: 500px;
-      display: flex; align-items: center; gap: 1rem; animation: fadeIn 1s ease;
-    }
-    .impact-icon { font-size: 1.5rem; filter: drop-shadow(0 0 5px var(--accent)); }
-    .impact-text { font-size: 0.9rem; color: var(--text-dim); line-height: 1.4; }
-    .impact-text b { color: var(--accent); }
-
     /* ── TOGGLE SWITCH ── */
     .personality-toggle {
       display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem;
@@ -1661,15 +1651,6 @@
           <span class="line2">Conscious Style AI</span>
         </div>
         <div class="hero-divider"></div>
-      </div>
-
-      <!-- Impact Widget -->
-      <div id="impact-card">
-        <span class="impact-icon">🌍</span>
-        <div class="impact-text">
-          <b>Daily Impact:</b> It takes approximately <span id="fact-val">2,700</span> liters of water to make just one cotton t-shirt. 
-          <i style="font-size:0.8rem; display:block; margin-top:0.2rem;">Choose bio-fabrics to save water.</i>
-        </div>
       </div>
 
       <p class="welcome-p">Discover ethical brands, eco-friendly materials, and conscious fashion choices — personalized
@@ -1898,22 +1879,6 @@ Tone: Warm, knowledgeable, encouraging. Format responses clearly with bold heade
     const authModal = document.getElementById('auth-modal');
     const userProfile = document.getElementById('user-profile');
     const modeToggle = document.getElementById('mode-toggle');
-
-    const FACTS = [
-      {icon: "🌍", text: "It takes <b>2,700 liters</b> of water to make one cotton t-shirt."},
-      {icon: "🚛", text: "Fashion is responsible for <b>10%</b> of all humanity's carbon emissions."},
-      {icon: "🧵", text: "Polyester takes over <b>200 years</b> to decompose in a landfill."},
-      {icon: "🌊", text: "Microplastics from synthetic clothes account for <b>35%</b> of ocean pollution."},
-      {icon: "👗", text: "The average person buys <b>60% more</b> clothes than 15 years ago but keeps them for half as long."}
-    ];
-
-    // Randomized Fact on Load
-    function updateFact() {
-      const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
-      document.querySelector('.impact-icon').textContent = fact.icon;
-      document.querySelector('.impact-text').innerHTML = `<b>Daily Impact:</b> ${fact.text} <i style="font-size:0.8rem; display:block; margin-top:0.2rem;">Choose bio-fabrics to save water.</i>`;
-    }
-    updateFact();
 
     // Real Firebase Auth Listener
     onAuthStateChanged(auth, (user) => {
